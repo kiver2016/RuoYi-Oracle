@@ -53,7 +53,18 @@ public class SysNoticeController extends BaseController
         List<SysNotice> list = noticeService.selectNoticeList(notice);
         return getDataTable(list);
     }
-
+    /**
+     * 查询公告列表
+     */
+    @RequiresPermissions("system:notice:list")
+    @PostMapping("/listhome")
+    @ResponseBody
+    public TableDataInfo listhome(SysNotice notice)
+    {
+    	startPage();
+    	List<SysNotice> list = noticeService.selectNoticeListHome(notice);
+    	return getDataTable(list);
+    }
     /**
      * 新增公告
      */
@@ -109,5 +120,14 @@ public class SysNoticeController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(noticeService.deleteNoticeByIds(ids));
+    }
+    /**
+     * 查看
+     */
+    @GetMapping("/detail/{noticeId}")
+    public String detail(@PathVariable("noticeId") Long noticeId, ModelMap mmap)
+    {
+        mmap.put("notice", noticeService.selectNoticeById(noticeId));
+        return prefix + "/detail";
     }
 }

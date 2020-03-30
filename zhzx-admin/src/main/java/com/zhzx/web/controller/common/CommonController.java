@@ -1,5 +1,7 @@
 package com.zhzx.web.controller.common;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -18,6 +20,10 @@ import com.zhzx.common.core.domain.AjaxResult;
 import com.zhzx.common.utils.StringUtils;
 import com.zhzx.common.utils.file.FileUploadUtils;
 import com.zhzx.common.utils.file.FileUtils;
+import com.zhzx.ims.domain.CustomerInfo;
+import com.zhzx.ims.domain.MaterialInfo;
+import com.zhzx.ims.service.ICustomerInfoService;
+import com.zhzx.ims.service.IMaterialInfoService;
 
 /**
  * 通用请求处理
@@ -31,6 +37,10 @@ public class CommonController
 
     @Autowired
     private ServerConfig serverConfig;
+    @Autowired
+    private IMaterialInfoService materialInfoService;
+    @Autowired
+    private ICustomerInfoService customerInfoService;
 
     /**
      * 通用下载请求
@@ -109,5 +119,33 @@ public class CommonController
         response.setHeader("Content-Disposition",
                 "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, downloadName));
         FileUtils.writeBytes(downloadPath, response.getOutputStream());
+    }
+    /**
+     * 获取产品基础数据
+     */
+    @GetMapping("/selectMaterialInfoList")
+    @ResponseBody
+    public AjaxResult selectMaterialInfoList()
+    {
+        AjaxResult ajax = new AjaxResult();
+        MaterialInfo materialInfo = new MaterialInfo();
+        List<MaterialInfo> materialInfoList = materialInfoService.selectMaterialInfoList(materialInfo);
+        ajax.put("code", 200);
+        ajax.put("value", materialInfoList);
+        return ajax;
+    }
+    /**
+     * 顾客基本信息
+     */
+    @GetMapping("/selectCustomerInfoList")
+    @ResponseBody
+    public AjaxResult selectCustomerInfoList()
+    {
+        AjaxResult ajax = new AjaxResult();
+        CustomerInfo customerInfo = new CustomerInfo();
+        List<CustomerInfo> customerInfoList = customerInfoService.selectCustomerInfoList(customerInfo);
+        ajax.put("code", 200);
+        ajax.put("value", customerInfoList);
+        return ajax;
     }
 }

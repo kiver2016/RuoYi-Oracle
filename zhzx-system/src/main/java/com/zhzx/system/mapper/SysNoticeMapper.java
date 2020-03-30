@@ -50,4 +50,6 @@ public interface SysNoticeMapper
      * @return 结果
      */
     public int deleteNoticeByIds(String[] noticeIds);
+    
+    public List<SysNotice> selectNoticeListHome(SysNotice notice);
 }

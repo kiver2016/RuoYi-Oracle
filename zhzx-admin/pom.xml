@@ -73,6 +73,12 @@
             <artifactId>zhzx-generator</artifactId>
         </dependency>
         
+        <!-- 仓库管理系统IMS -->
+		<dependency>
+			<groupId>com.zhzx</groupId>
+			<artifactId>zhzx-ims</artifactId>
+		</dependency>
+		
     </dependencies>
 
     <build>

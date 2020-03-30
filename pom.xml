@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
     <groupId>com.zhzx</groupId>
@@ -32,6 +30,7 @@
 		<poi.version>3.17</poi.version>
 		<velocity.version>1.7</velocity.version>
 		<oracle.version>11.2.0.3</oracle.version>
+		<zhzx.version>4.2.0</zhzx.version>
 	</properties>
 	
     <!-- 依赖声明 -->
@@ -204,6 +203,13 @@
 	            <version>${ruoyi.version}</version>
 	        </dependency>
 	        
+	        <!-- 仓库管理系统IMS-->
+	        <dependency>
+	            <groupId>com.zhzx</groupId>
+	            <artifactId>zhzx-ims</artifactId>
+	            <version>${zhzx.version}</version>
+	        </dependency>
+	        
         </dependencies>
     </dependencyManagement>
 
@@ -214,7 +220,8 @@
 		<module>zhzx-quartz</module>
 		<module>zhzx-generator</module>
         <module>zhzx-common</module>
-    </modules>
+    	<module>zhzx-ims</module>
+  </modules>
     <packaging>pom</packaging>
 
 

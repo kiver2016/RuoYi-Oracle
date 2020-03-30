@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
-    <title>若依系统首页</title>
-    <!-- 避免IE使用兼容模式 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>智慧产品进销管理系统</title>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
     <link th:href="@{favicon.ico}" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/jquery.contextMenu.min.css}" rel="stylesheet"/>
@@ -14,7 +15,7 @@
     <link th:href="@{/css/animate.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <link th:href="@{/css/skins.css}" rel="stylesheet"/>
-    <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet"/>
+    <link th:href="@{/ruoyi/css/ry-ui.css?v=4.1.0}" rel="stylesheet"/>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
 <div id="wrapper">
@@ -24,13 +25,16 @@
         <div class="nav-close">
             <i class="fa fa-times-circle"></i>
         </div>
-        <a th:href="@{/index}">
-            <li class="logo hidden-xs">
-                <span class="logo-lg">RuoYi</span> 
-            </li>
-         </a>
         <div class="sidebar-collapse">
             <ul class="nav" id="side-menu">
+                <a th:href="@{/index}">
+                  <li class="logo">
+				   <!--  <span class="logo-lg" >智慧产品进销管理系统</span>  -->
+				    <span class="logo-lg">
+				    	<img alt="[ 智慧产品进销管理系统]" src="../static/ruoyi.png" th:src="@{/ruoyi.png}" style="width: 150px">
+				    </span> 
+            	  </li>
+            	</a>
             	<li>
             		<div class="user-panel">
             			<a class="menuItem" title="个人中心" th:href="@{/system/user/profile}"> 
@@ -47,9 +51,9 @@
 				    </div>
             	</li>
                 <li>
-                    <a href="#"><i class="fa fa-home"></i> <span class="nav-label">主页</span> <span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-home"></i> <span class="nav-label">首页</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li><a class="menuItem" th:href="@{/system/main}">了解若依</a></li>
+                        <li><a class="menuItem" th:href="@{/system/main}">图表中心</a></li>
                     </ul>
                 </li>
                 <li th:each="menu : ${menus}">
@@ -63,18 +67,12 @@
 							<a th:if="${#lists.isEmpty(cmenu.children)}" th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}" th:utext="${cmenu.menuName}" th:href="@{${cmenu.url}}">二级菜单</a>
 							<a th:if="${not #lists.isEmpty(cmenu.children)}" href="#">[[${cmenu.menuName}]]<span class="fa arrow"></span></a>
 							<ul th:if="${not #lists.isEmpty(cmenu.children)}" class="nav nav-third-level">
-								<li th:each="emenu : ${cmenu.children}">
-								    <a th:if="${#lists.isEmpty(emenu.children)}" th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}" th:text="${emenu.menuName}" th:href="@{${emenu.url}}">三级菜单</a>
-								    <a th:if="${not #lists.isEmpty(emenu.children)}" href="#">[[${emenu.menuName}]]<span class="fa arrow"></span></a>
-								    <ul th:if="${not #lists.isEmpty(emenu.children)}" class="nav nav-four-level">
-								      	<li th:each="fmenu : ${emenu.children}"><a th:if="${#lists.isEmpty(fmenu.children)}" th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}" th:text="${fmenu.menuName}" th:href="@{${fmenu.url}}">四级菜单</a></li>
-								    </ul>
-								</li>
+								<li th:each="emenu : ${cmenu.children}"><a th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}" th:text="${emenu.menuName}" th:href="@{${emenu.url}}">三级菜单</a></li>
 							</ul>
 						</li>
 					</ul>
                 </li>
-                <li th:if="${demoEnabled}">
+                <li th:if="${demoEnabled}" style="display: none">
                     <a href="#"><i class="fa fa-desktop"></i><span class="nav-label">实例演示</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li> <a>表单<span class="fa arrow"></span></a>
@@ -174,19 +172,26 @@
     <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
+                <div class="navbar-header" style="width: 40px;">
                     <a class="navbar-minimalize minimalize-styl-2" style="color:#FFF;" href="#" title="收起菜单">
                     	<i class="fa fa-bars"></i>
                     </a>
                 </div>
-                <ul class="nav navbar-top-links navbar-right welcome-message">
-                    <li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>
+                <ul class="nav navbar-left welcome-message" >
+                	<li>
+	                	<a title="智慧产品进销管理系统" href="#" target="_blank"><!-- <i class="fa fa-video-camera"></i> -->
+	                		<span style="font-size: 20px;">智慧产品进销管理系统</span>
+	                	</a>
+                	</li>
+                </ul>
+                <ul class="nav navbar-top-links navbar-right welcome-message" >
+                   <!--  <li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>
                     <li><a title="开发文档" href="http://doc.ruoyi.vip" target="_blank"><i class="fa fa-question-circle"></i> 开发文档</a></li>
 	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>
-                    <li class="dropdown user-menu">
+                     --><li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
 							<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="user-image">
-							<span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>
+							<span class="hidden-xs">[[${user.userName}]]</span>
 						</a>
 						<ul class="dropdown-menu">
 							<li class="mt5">
@@ -233,7 +238,7 @@
                     th:src="@{/system/main}" frameborder="0" seamless></iframe>
         </div>
         <div class="footer">
-            <div class="pull-right">© [[${copyrightYear}]] RuoYi Copyright </div>
+            <div class="pull-right">© [[${copyrightYear}]] 智慧产品进销管理系统 Copyright </div>
         </div>
     </div>
     <!--右侧部分结束-->
@@ -246,8 +251,8 @@
 <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
 <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
 <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-<script th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
-<script th:src="@{/ruoyi/js/common.js?v=4.2.0}"></script>
+<script th:src="@{/ruoyi/js/ry-ui.js?v=4.1.0}"></script>
+<script th:src="@{/ruoyi/js/common.js?v=4.1.0}"></script>
 <script th:src="@{/ruoyi/index.js}"></script>
 <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
 <script th:inline="javascript">
@@ -266,8 +271,10 @@ if($.common.isNotEmpty(skin)){
 	$("body").addClass(skin.split('|')[0]);
 	$("body").addClass(skin.split('|')[1]);
 } else {
-	$("body").addClass([[${sideTheme}]]);
-	$("body").addClass([[${skinName}]]);
+	var sideTheme = [[${@config.getKey('sys.index.sideTheme')}]];
+	var skinName = [[${@config.getKey('sys.index.skinName')}]];
+	$("body").addClass(sideTheme);
+	$("body").addClass(skinName);
 }
 
 /* 用户管理-重置密码 */

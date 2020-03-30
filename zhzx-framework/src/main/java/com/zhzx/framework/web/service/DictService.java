@@ -41,6 +41,10 @@ public class DictService
      */
     public String getLabel(String dictType, String dictValue)
     {
-        return dictDataService.selectDictLabel(dictType, dictValue);
+    	if(dictValue!=null && !dictValue.equals("")) {
+    		return dictDataService.selectDictLabel(dictType, dictValue);
+    	}else {
+    		return "";
+    	}
     }
 }
