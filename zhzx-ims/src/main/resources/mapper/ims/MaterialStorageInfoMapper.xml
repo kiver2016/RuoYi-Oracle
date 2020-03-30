@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialStorageInfoMapper">
+    
+    <resultMap type="MaterialStorageInfo" id="MaterialStorageInfoResult">
+        <result property="materialStorageInfoId"    column="material_storage_info_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialLargeClass"    column="material_large_class"    />
+        <result property="materialSubClass"    column="material_sub_class"    />
+        <result property="materialPutNum"    column="material_put_num"    />
+        <result property="materialOutNum"    column="material_out_num"    />
+        <result property="materialStorageNum"    column="material_storage_num"    />
+        <result property="storage"    column="storage"    />
+    </resultMap>
+
+    <sql id="selectMaterialStorageInfoVo">
+        select material_storage_info_id, material_name, material_brand, material_model, material_norms, material_large_class, material_sub_class, material_put_num, material_out_num, material_storage_num, storage from material_storage_info
+    </sql>
+
+    <select id="selectMaterialStorageInfoList" parameterType="MaterialStorageInfo" resultMap="MaterialStorageInfoResult">
+        <include refid="selectMaterialStorageInfoVo"/>
+        <where>  
+            <if test="materialName != null "> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialBrand != null "> and material_brand like concat(concat('%', #{materialBrand}), '%')</if>
+            <if test="materialModel != null "> and material_model like concat(concat('%', #{materialModel}), '%')</if>
+            <if test="materialNorms != null "> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>
+            <if test="materialLargeClass != null "> and material_large_class like concat(concat('%', #{materialLargeClass}), '%')</if>
+            <if test="materialSubClass != null "> and material_sub_class like concat(concat('%', #{materialSubClass}), '%')</if>
+            <if test="materialPutNum != null "> and material_put_num like concat(concat('%', #{materialPutNum}), '%')</if>
+            <if test="materialOutNum != null "> and material_out_num like concat(concat('%', #{materialOutNum}), '%')</if>
+            <if test="materialStorageNum != null "> and material_storage_num like concat(concat('%', #{materialStorageNum}), '%')</if>
+            <if test="storage != null "> and storage like concat(concat('%', #{storage}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialStorageInfoById" parameterType="Long" resultMap="MaterialStorageInfoResult">
+    	<include refid="selectMaterialStorageInfoVo"/>
+    	where material_storage_info_id = #{materialStorageInfoId}
+    </select>
+        
+    <insert id="insertMaterialStorageInfo" parameterType="MaterialStorageInfo">
+        <selectKey keyProperty="materialStorageInfoId" resultType="long" order="BEFORE">
+            SELECT seq_material_storage_info.NEXTVAL as materialStorageInfoId FROM DUAL
+        </selectKey>
+        insert into material_storage_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialStorageInfoId != null ">material_storage_info_id,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialLargeClass != null ">material_large_class,</if>
+            <if test="materialSubClass != null ">material_sub_class,</if>
+            <if test="materialPutNum != null ">material_put_num,</if>
+            <if test="materialOutNum != null ">material_out_num,</if>
+            <if test="materialStorageNum != null ">material_storage_num,</if>
+            <if test="storage != null ">storage,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialStorageInfoId != null ">#{materialStorageInfoId},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialLargeClass != null ">#{materialLargeClass},</if>
+            <if test="materialSubClass != null ">#{materialSubClass},</if>
+            <if test="materialPutNum != null ">#{materialPutNum},</if>
+            <if test="materialOutNum != null ">#{materialOutNum},</if>
+            <if test="materialStorageNum != null ">#{materialStorageNum},</if>
+            <if test="storage != null ">#{storage},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialStorageInfo" parameterType="MaterialStorageInfo">
+        update material_storage_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialLargeClass != null ">material_large_class = #{materialLargeClass},</if>
+            <if test="materialSubClass != null ">material_sub_class = #{materialSubClass},</if>
+            <if test="materialPutNum != null ">material_put_num = #{materialPutNum},</if>
+            <if test="materialOutNum != null ">material_out_num = #{materialOutNum},</if>
+            <if test="materialStorageNum != null ">material_storage_num = #{materialStorageNum},</if>
+            <if test="storage != null ">storage = #{storage},</if>
+        </trim>
+        where material_storage_info_id = #{materialStorageInfoId}
+    </update>
+
+    <delete id="deleteMaterialStorageInfoById" parameterType="Long">
+        delete from material_storage_info where material_storage_info_id = #{materialStorageInfoId}
+    </delete>
+
+    <delete id="deleteMaterialStorageInfoByIds" parameterType="String">
+        delete from material_storage_info where material_storage_info_id in 
+        <foreach item="materialStorageInfoId" collection="array" open="(" separator="," close=")">
+            #{materialStorageInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

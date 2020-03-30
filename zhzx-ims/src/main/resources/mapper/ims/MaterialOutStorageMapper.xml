@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialOutStorageMapper">
+    
+    <resultMap type="MaterialOutStorage" id="MaterialOutStorageResult">
+        <result property="materialOutId"    column="material_out_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialLargeClass"    column="material_large_class"    />
+        <result property="materialSubClass"    column="material_sub_class"    />
+        <result property="storage"    column="storage"    />
+        <result property="outNum"    column="out_num"    />
+        <result property="materialOutDate"    column="material_out_date"    />
+        <result property="customer"    column="customer"    />
+        <result property="deliveryPlace"    column="delivery_place"    />
+        <result property="tCost"    column="t_cost"    />
+        <result property="operoter"    column="operoter"    />
+    </resultMap>
+
+    <sql id="selectMaterialOutStorageVo">
+        select material_out_id, material_name, material_model, material_norms, material_large_class, material_sub_class, storage, out_num, material_out_date, customer, delivery_place, t_cost, operoter from material_out_storage
+    </sql>
+
+    <select id="selectMaterialOutStorageList" parameterType="MaterialOutStorage" resultMap="MaterialOutStorageResult">
+        <include refid="selectMaterialOutStorageVo"/>
+        <where>  
+            <if test="materialName != null and materialName !=''"> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialModel != null and materialModel !=''"> and material_model like concat(concat('%', #{materialModel}), '%')</if>
+            <if test="materialNorms != null and materialNorms !=''"> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>
+            <if test="materialLargeClass != null and materialLargeClass !=''"> and material_large_class like concat(concat('%', #{materialLargeClass}), '%')</if>
+            <if test="materialSubClass != null and materialSubClass !=''"> and material_sub_class like concat(concat('%', #{materialSubClass}), '%')</if>
+            <if test="storage != null and storage !=''"> and storage like concat(concat('%', #{storage}), '%')</if>
+            <if test="outNum != null and outNum !=''"> and out_num like concat(concat('%', #{outNum}), '%')</if>
+            <if test="params.beginMaterialOutDate != null and params.beginMaterialOutDate != ''"><!-- 开始时间检索 -->
+				AND material_out_date &gt;= to_date(#{params.beginMaterialOutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endMaterialOutDate != null and params.endMaterialOutDate != ''"><!-- 结束时间检索 -->
+				AND material_out_date &lt;= to_date(#{params.endMaterialOutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+            <if test="customer != null and customer !=''"> and customer like concat(concat('%', #{customer}), '%')</if>
+            <if test="deliveryPlace != null and deliveryPlace !=''"> and delivery_place like concat(concat('%', #{deliveryPlace}), '%')</if>
+            <if test="tCost != null and tCost !=''"> and t_cost like concat(concat('%', #{tCost}), '%')</if>
+            <if test="operoter != null and operoter !=''"> and operoter like concat(concat('%', #{operoter}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialOutStorageById" parameterType="Long" resultMap="MaterialOutStorageResult">
+    	<include refid="selectMaterialOutStorageVo"/>
+    	where material_out_id = #{materialOutId}
+    </select>
+        
+    <insert id="insertMaterialOutStorage" parameterType="MaterialOutStorage">
+        <selectKey keyProperty="materialOutId" resultType="long" order="BEFORE">
+            SELECT seq_material_out_storage.NEXTVAL as materialOutId FROM DUAL
+        </selectKey>
+        insert into material_out_storage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialOutId != null ">material_out_id,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialLargeClass != null ">material_large_class,</if>
+            <if test="materialSubClass != null ">material_sub_class,</if>
+            <if test="storage != null ">storage,</if>
+            <if test="outNum != null ">out_num,</if>
+            <if test="materialOutDate != null ">material_out_date,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="deliveryPlace != null ">delivery_place,</if>
+            <if test="tCost != null ">t_cost,</if>
+            <if test="operoter != null ">operoter,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialOutId != null ">#{materialOutId},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialLargeClass != null ">#{materialLargeClass},</if>
+            <if test="materialSubClass != null ">#{materialSubClass},</if>
+            <if test="storage != null ">#{storage},</if>
+            <if test="outNum != null ">#{outNum},</if>
+            <if test="materialOutDate != null ">#{materialOutDate},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="deliveryPlace != null ">#{deliveryPlace},</if>
+            <if test="tCost != null ">#{tCost},</if>
+            <if test="operoter != null ">#{operoter},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialOutStorage" parameterType="MaterialOutStorage">
+        update material_out_storage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialLargeClass != null ">material_large_class = #{materialLargeClass},</if>
+            <if test="materialSubClass != null ">material_sub_class = #{materialSubClass},</if>
+            <if test="storage != null ">storage = #{storage},</if>
+            <if test="outNum != null ">out_num = #{outNum},</if>
+            <if test="materialOutDate != null ">material_out_date = #{materialOutDate},</if>
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="deliveryPlace != null ">delivery_place = #{deliveryPlace},</if>
+            <if test="tCost != null ">t_cost = #{tCost},</if>
+            <if test="operoter != null ">operoter = #{operoter},</if>
+        </trim>
+        where material_out_id = #{materialOutId}
+    </update>
+
+    <delete id="deleteMaterialOutStorageById" parameterType="Long">
+        delete from material_out_storage where material_out_id = #{materialOutId}
+    </delete>
+
+    <delete id="deleteMaterialOutStorageByIds" parameterType="String">
+        delete from material_out_storage where material_out_id in 
+        <foreach item="materialOutId" collection="array" open="(" separator="," close=")">
+            #{materialOutId}
+        </foreach>
+    </delete>
+    
+</mapper>

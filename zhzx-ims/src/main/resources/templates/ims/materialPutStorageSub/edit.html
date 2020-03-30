@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="include :: header('修改材料入库信息子')" />
+<th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-materialPutStorageSub-edit"
+			th:object="${materialPutStorageSub}">
+			<input name="materialPutSubId" th:field="*{materialPutSubId}"
+				type="hidden">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>产品名称：</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input id="materialName" name="materialName"
+									th:field="*{materialName}" class="form-control" type="text">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle"
+										data-toggle="dropdown">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>型号：</label>
+						<div class="col-sm-8">
+							<input name="materialModel" th:field="*{materialModel}"
+								class="form-control" type="text" readonly="readonly">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>规格：</label>
+						<div class="col-sm-8">
+							<input name="materialNorms" th:field="*{materialNorms}"
+								class="form-control" type="text" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>产品大类：</label>
+						<div class="col-sm-8">
+							<input name="materialLargeClass" th:field="*{materialLargeClass}"
+								class="form-control" type="text" readonly="readonly">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>产品小类：</label>
+						<div class="col-sm-8">
+							<input name="materialSubClass" th:field="*{materialSubClass}"
+								class="form-control" type="text" readonly="readonly">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>入库数量：</label>
+						<div class="col-sm-8">
+							<input name="putNum" th:field="*{putNum}" class="form-control"
+								type="text">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>存放位置：</label>
+						<div class="col-sm-8">
+							<input name="storageLocation" th:field="*{storageLocation}"
+								class="form-control" type="text">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>备注：</label>
+						<div class="col-sm-8">
+							<input name="remark" th:field="*{remark}" class="form-control"
+								type="text">
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: bootstrap-suggest-js" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<script type="text/javascript">
+		var prefix = ctx + "ims/materialPutStorageSub";
+		$("#form-materialPutStorageSub-edit").validate({
+			focusCleanup : true
+		});
+
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/edit", $(
+						'#form-materialPutStorageSub-edit').serialize());
+			}
+		}
+
+		$("#materialName").bsSuggest(
+				{
+					url : ctx + "selectMaterialInfoList",
+					idField : "materialId",
+					keyField : "materialName",
+					effectiveFields : [ 'materialName', 'materialBrand',
+							'materialModel', 'materialNorms',
+							'materialLargeClass', 'materialSubClass' ],
+					effectiveFieldsAlias : {
+						'materialName' : '产品名称',
+						'materialBrand' : '品牌',
+						'materialModel' : '型号',
+						'materialNorms' : '规格',
+						'materialLargeClass' : '大类',
+						'materialSubClass' : '小类'
+					},
+				}).on('onDataRequestSuccess', function(e, result) {
+			console.log('onDataRequestSuccess: ', result);
+		}).on(
+				'onSetSelectValue',
+				function(e, selectedData, selectedRawData) {
+					console.log('onSetSelectValue: ', e.target.value,
+							selectedData, selectedRawData.materialBrand);
+					$("input[name='materialModel']").val(
+							selectedRawData.materialModel);
+					$("input[name='materialNorms']").val(
+							selectedRawData.materialNorms);
+					$("input[name='materialLargeClass']").val(
+							selectedRawData.materialLargeClass);
+					$("input[name='materialSubClass']").val(
+							selectedRawData.materialSubClass);
+				}).on('onUnsetSelectValue', function(e) {
+			console.log("onUnsetSelectValue");
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('送货清单列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>顾客姓名：</p>
+                                <input type="text" name="customer"/>
+                            </li>
+                            <!-- <li>
+                                <p>电话号码：</p>
+                                <input type="text" name="phonenum"/>
+                            </li>
+                            <li>
+                                <p>地址：</p>
+                                <input type="text" name="address"/>
+                            </li>-->
+                            <li class="select-time">
+                                <p>送货日期：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginDeliveryDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endDeliveryDate]"/>
+                            </li> 
+                            <li>
+                                <p>品牌：</p>
+                                <input type="text" name="materialBrand"/>
+                            </li>
+                            <li>
+                                <p>库房：</p>
+                                <input type="text" name="storage"/>
+                            </li>
+                            <li>
+                                <p>经办人：</p>
+                                <input type="text" name="trustees"/>
+                            </li>
+                            <!-- <li class="select-time">
+                                <p>日期：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTrusteesDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTrusteesDate]"/>
+                            </li>
+                            <li class="select-time">
+                                <p>出库日期：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginStorageOutDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endStorageOutDate]"/>
+                            </li>
+                            <li>
+                                <p>库管员：</p>
+                                <input type="text" name="storageManger"/>
+                            </li> -->
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="ims:materialDeliveryList:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="ims:materialDeliveryList:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ims:materialDeliveryList:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-primary single disabled" onclick="confirmPutIn()" shiro:hasPermission="ims:materialPutStorage:edit">
+                    <i class="fa fa-edit"></i> 确认出库
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ims:materialDeliveryList:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('ims:materialDeliveryList:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ims:materialDeliveryList:remove')}]];
+        var storage_location = [[${@dict.getType('storage_location')}]];
+        var detailFlag = [[${@permission.hasPermi('ims:materialDeliveryList:detail')}]];
+        var isConfirm = [[${@dict.getType('isConfirm')}]];
+        var prefix = ctx + "ims/materialDeliveryList";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "送货清单",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'deliveryListId', 
+                    title : '主键',
+                    visible: false
+                },
+                {
+                    field : 'customer', 
+                    title : '顾客姓名'
+                },
+                {
+                    field : 'phonenum', 
+                    title : '电话号码'
+                },
+                {
+                    field : 'address', 
+                    title : '地址'
+                },
+                {
+                    field : 'deliveryDate', 
+                    title : '日期',
+                    formatter: function (value, row, index) {  
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'materialBrand', 
+                    title : '品牌'
+                },
+                {
+                    field : 'storage', 
+                    title : '库房',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(storage_location, value);
+                     }
+                },
+                {
+                    field : 'trustees', 
+                    title : '经办人'
+                },
+                {
+                    field : 'trusteesDate', 
+                    title : '日期',
+                    formatter: function (value, row, index) {  
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                	field :'isOut',
+                	title : '是否已出库',
+                	formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(isConfirm, value);
+                     }
+                },
+                {
+                    field : 'storageOutDate', 
+                    title : '出库日期',
+                    formatter: function (value, row, index) {  
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'storageManger', 
+                    title : '库管员'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    width: '170px',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.deliveryListId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.deliveryListId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.deliveryListId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function confirmPutIn(){
+        	var url = prefix + "/confirmPutOut/"+$.table.selectColumns("deliveryListId");
+        	$.modal.openFull("确认出库", url);
+        }
+    </script>
+</body>
+</html>

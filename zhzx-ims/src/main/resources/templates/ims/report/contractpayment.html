@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('送货清单辅材列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row" id="opt-content">
+            <div class="col-sm-12 search-collapse" id="parameter_Table">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                        	<li>
+                                <p>客户名称：</p>
+                                <input type="text" id="customer" name="customer" class="searchInputClass" value=""/>
+                            </li>
+                            <li>
+                                <p>销售人员：</p>
+                                <input type="text" id="salesman" name="salesman" class="searchInputClass" value=""/>
+                            </li>
+                            <li class="select-time">
+                                <p>签单日期：</p>
+                                <input type="text" class="time-input searchInputClass" id="startTime" placeholder="开始时间" name="startTime"/>
+                                <span>-</span>
+                                <input type="text" class="time-input searchInputClass" id="endTime" placeholder="结束时间" name="endTime"/>
+                            </li>
+                            <li>
+                                <p>付款状态：</p>
+                                <select id="isSettle" name="isSettle" th:with="type=${@dict.getType('sys_yes_no')}" class="searchInputClass">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchReport();"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-12 select-table table-striped" style="padding-left: 2px;padding-right: 2px;" align="center">
+                <iframe id="myIframe" src=""  width="100%" height="480px;" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+    	var resouseUrl=ipAddress+":6001/demo/reportJsp/showReport-ims.jsp?raq=/contractpayment.raq";
+
+        $(function() {
+        	$("#myIframe").height($("#opt-content").height()-$("#parameter_Table").height()-80);
+			$("#myIframe").attr("src",resouseUrl);
+        });
+        function searchReport(){
+        	var conditions="";
+			$(".searchInputClass").each(function(i,obj){
+				//alert($(obj).attr("id"));
+				var id = $(obj).attr("id");
+				//alert($("#"+id).val());
+				conditions=conditions+"&"+$(obj).attr("name")+"="+$("#"+id).val();
+			});
+			url=resouseUrl+"&_t="+new Date();
+			url=url+conditions;
+			$("#myIframe").attr("src",url);
+        }
+    </script>
+</body>
+</html>

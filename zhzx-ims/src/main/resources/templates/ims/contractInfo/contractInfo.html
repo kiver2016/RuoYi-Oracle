@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('合同信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li class="select-time">
+                                <p>合同签订日期：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginContractDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endContractDate]"/>
+                            
+                            </li>
+                            <li>
+                                <p>顾客姓名：</p>
+                                <input type="text" name="customer"/>
+                            </li>
+                            <li>
+                                <p>销售员：</p>
+                                <input type="text" name="salesperson"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="ims:contractInfo:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="ims:contractInfo:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ims:contractInfo:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ims:contractInfo:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('ims:contractInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ims:contractInfo:remove')}]];
+        var detailFlag = [[${@permission.hasPermi('ims:contractInfo:detail')}]];
+        var prefix = ctx + "ims/contractInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "合同信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'contractInfoId', 
+                    title : '主键',
+                    visible: false
+                },
+                {
+                    field : 'contractNum', 
+                    title : '合同编号'
+                },
+                {
+                    field : 'customer', 
+                    title : '顾客名称'
+                },
+                {
+                    field : 'phone', 
+                    title : '手机号码'
+                },
+                {
+                    field : 'address', 
+                    title : '地址'
+                },
+                {
+                    field : 'contractDate', 
+                    title : '合同签订日期',
+                    formatter: function (value, row, index) {  
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'contractLimit', 
+                    title : '合同额度'
+                },
+                {
+                    field : 'paymentMethod', 
+                    title : '付款方式'
+                },
+                {
+                    field : 'salesperson', 
+                    title : '销售员'
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.contractInfoId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.contractInfoId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.contractInfoId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

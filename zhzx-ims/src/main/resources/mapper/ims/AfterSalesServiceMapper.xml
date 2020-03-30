@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.AfterSalesServiceMapper">
+    
+    <resultMap type="AfterSalesService" id="AfterSalesServiceResult">
+        <result property="afterSalesServiceId"    column="after_sales_service_id"    />
+        <result property="customer"    column="customer"    />
+        <result property="address"    column="address"    />
+        <result property="serviceContext"    column="service_context"    />
+        <result property="scenePhotos"    column="scene_photos"    />
+        <result property="hand"    column="hand"    />
+        <result property="serviceDate"    column="service_date"    />
+    </resultMap>
+
+    <sql id="selectAfterSalesServiceVo">
+        select after_sales_service_id, customer, address, service_context, scene_photos, hand, service_date from after_sales_service
+    </sql>
+
+    <select id="selectAfterSalesServiceList" parameterType="AfterSalesService" resultMap="AfterSalesServiceResult">
+        <include refid="selectAfterSalesServiceVo"/>
+        <where>
+            <if test="customer != null and customer !=''"> and customer = #{customer}</if>
+            <if test="address != null and address !=''"> and address = #{address}</if>
+            <if test="serviceContext != null and serviceContext !=''"> and service_context = #{serviceContext}</if>
+            <if test="hand != null and hand !=''"> and hand = #{hand}</if>  
+        	<if test="params.beginServiceDate != null and params.beginServiceDate != ''"><!-- 开始时间检索 -->
+				AND service_date &gt;= to_date(#{params.beginServiceDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endServiceDate != null and params.endServiceDate != ''"><!-- 结束时间检索 -->
+				AND service_date &lt;= to_date(#{params.endServiceDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+        </where>
+    </select>
+    
+    <select id="selectAfterSalesServiceById" parameterType="Long" resultMap="AfterSalesServiceResult">
+	    <include refid="selectAfterSalesServiceVo"/>
+	    where after_sales_service_id = #{afterSalesServiceId}
+    </select>
+        
+    <insert id="insertAfterSalesService" parameterType="AfterSalesService">
+        <selectKey keyProperty="afterSalesServiceId" resultType="long" order="BEFORE">
+            SELECT seq_after_sales_service.NEXTVAL as afterSalesServiceId FROM DUAL
+        </selectKey>
+        insert into after_sales_service
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="afterSalesServiceId != null ">after_sales_service_id,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="address != null ">address,</if>
+            <if test="serviceContext != null ">service_context,</if>
+            <if test="scenePhotos != null ">scene_photos,</if>
+            <if test="hand != null ">hand,</if>
+            <if test="serviceDate != null ">service_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="afterSalesServiceId != null ">#{afterSalesServiceId},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="address != null ">#{address},</if>
+            <if test="serviceContext != null ">#{serviceContext},</if>
+            <if test="scenePhotos != null ">#{scenePhotos},</if>
+            <if test="hand != null ">#{hand},</if>
+            <if test="serviceDate != null ">#{serviceDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAfterSalesService" parameterType="AfterSalesService">
+        update after_sales_service
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="address != null ">address = #{address},</if>
+            <if test="serviceContext != null ">service_context = #{serviceContext},</if>
+            <if test="scenePhotos != null ">scene_photos = #{scenePhotos},</if>
+            <if test="hand != null ">hand = #{hand},</if>
+            <if test="serviceDate != null ">service_date = #{serviceDate},</if>
+        </trim>
+        where after_sales_service_id = #{afterSalesServiceId}
+    </update>
+
+    <delete id="deleteAfterSalesServiceById" parameterType="Long">
+        delete from after_sales_service where after_sales_service_id = #{afterSalesServiceId}
+    </delete>
+
+    <delete id="deleteAfterSalesServiceByIds" parameterType="String">
+        delete from after_sales_service where after_sales_service_id in 
+        <foreach item="afterSalesServiceId" collection="array" open="(" separator="," close=")">
+            #{afterSalesServiceId}
+        </foreach>
+    </delete>
+    
+</mapper>

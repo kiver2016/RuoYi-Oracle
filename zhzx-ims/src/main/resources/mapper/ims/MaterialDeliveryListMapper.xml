@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialDeliveryListMapper">
+    
+    <resultMap type="MaterialDeliveryList" id="MaterialDeliveryListResult">
+        <result property="deliveryListId"    column="delivery_list_id"    />
+        <result property="customer"    column="customer"    />
+        <result property="phonenum"    column="phonenum"    />
+        <result property="address"    column="address"    />
+        <result property="deliveryDate"    column="delivery_date"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="storage"    column="storage"    />
+        <result property="trustees"    column="trustees"    />
+        <result property="trusteesDate"    column="trustees_date"    />
+        <result property="storageOutDate"    column="storage_out_date"    />
+        <result property="storageManger"    column="storage_manger"    />
+        <result property="isOut"    column="is_out"    />
+    </resultMap>
+
+    <sql id="selectMaterialDeliveryListVo">
+        select delivery_list_id, customer, phonenum, address, delivery_date, material_brand, storage, trustees, trustees_date, storage_out_date, storage_manger, is_out from material_delivery_list
+    </sql>
+
+    <select id="selectMaterialDeliveryListList" parameterType="MaterialDeliveryList" resultMap="MaterialDeliveryListResult">
+        <include refid="selectMaterialDeliveryListVo"/>
+        <where>
+        	<if test="customer != null and customer !=''"> and customer like concat(concat('%', #{customer}), '%')</if>
+        	<if test="phonenum != null and phonenum !=''"> and phonenum like concat(concat('%', #{phonenum}), '%')</if>
+        	<if test="address != null and address !=''"> and address like concat(concat('%', #{address}), '%')</if>
+        	<if test="params.beginDeliveryDate != null and params.beginDeliveryDate != ''"><!-- 开始时间检索 -->
+				AND delivery_date &gt;= to_date(#{params.beginDeliveryDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endDeliveryDate != null and params.endDeliveryDate != ''"><!-- 结束时间检索 -->
+				AND delivery_date &lt;= to_date(#{params.endDeliveryDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="materialBrand != null and materialBrand !=''"> and material_brand like concat(concat('%', #{materialBrand}), '%')</if>
+			<if test="storage != null and storage !=''"> and storage like concat(concat('%', #{storage}), '%')</if>
+			<if test="trustees != null and trustees !=''"> and trustees like concat(concat('%', #{trustees}), '%')</if>
+			<if test="params.beginTrusteesDate != null and params.beginTrusteesDate != ''"><!-- 开始时间检索 -->
+				AND delivery_date &gt;= to_date(#{params.beginTrusteesDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endTrusteesDate != null and params.endTrusteesDate != ''"><!-- 结束时间检索 -->
+				AND delivery_date &lt;= to_date(#{params.endTrusteesDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.beginStorageOutDate != null and params.beginStorageOutDate != ''"><!-- 开始时间检索 -->
+				AND storage_out_date &gt;= to_date(#{params.beginStorageOutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endStorageOutDate != null and params.endStorageOutDate != ''"><!-- 结束时间检索 -->
+				AND storage_out_date &lt;= to_date(#{params.endStorageOutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="storageManger != null and storageManger !=''"> and storage_manger like concat(concat('%', #{storageManger}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialDeliveryListById" parameterType="Long" resultMap="MaterialDeliveryListResult">
+    	<include refid="selectMaterialDeliveryListVo"/>
+    	where delivery_list_id = #{deliveryListId}
+    </select>
+        
+    <insert id="insertMaterialDeliveryList" parameterType="MaterialDeliveryList">
+        <selectKey keyProperty="deliveryListId" resultType="long" order="BEFORE">
+            SELECT seq_material_delivery_list.NEXTVAL as deliveryListId FROM DUAL
+        </selectKey>
+        insert into material_delivery_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deliveryListId != null ">delivery_list_id,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="phonenum != null ">phonenum,</if>
+            <if test="address != null ">address,</if>
+            <if test="deliveryDate != null ">delivery_date,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="storage != null ">storage,</if>
+            <if test="trustees != null ">trustees,</if>
+            <if test="trusteesDate != null ">trustees_date,</if>
+            <if test="storageOutDate != null ">storage_out_date,</if>
+            <if test="storageManger != null ">storage_manger,</if>
+            <if test="isOut != null ">is_out,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deliveryListId != null ">#{deliveryListId},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="phonenum != null ">#{phonenum},</if>
+            <if test="address != null ">#{address},</if>
+            <if test="deliveryDate != null ">#{deliveryDate},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="storage != null ">#{storage},</if>
+            <if test="trustees != null ">#{trustees},</if>
+            <if test="trusteesDate != null ">#{trusteesDate},</if>
+            <if test="storageOutDate != null ">#{storageOutDate},</if>
+            <if test="storageManger != null ">#{storageManger},</if>
+            <if test="isOut != null ">#{isOut},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialDeliveryList" parameterType="MaterialDeliveryList">
+        update material_delivery_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="phonenum != null ">phonenum = #{phonenum},</if>
+            <if test="address != null ">address = #{address},</if>
+            <if test="deliveryDate != null ">delivery_date = #{deliveryDate},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="storage != null ">storage = #{storage},</if>
+            <if test="trustees != null ">trustees = #{trustees},</if>
+            <if test="trusteesDate != null ">trustees_date = #{trusteesDate},</if>
+            <if test="storageOutDate != null ">storage_out_date = #{storageOutDate},</if>
+            <if test="storageManger != null ">storage_manger = #{storageManger},</if>
+            <if test="isOut != null ">is_out = #{isOut},</if>
+        </trim>
+        where delivery_list_id = #{deliveryListId}
+    </update>
+
+    <delete id="deleteMaterialDeliveryListById" parameterType="Long">
+        delete from material_delivery_list where delivery_list_id = #{deliveryListId}
+    </delete>
+
+    <delete id="deleteMaterialDeliveryListByIds" parameterType="String">
+        delete from material_delivery_list where delivery_list_id in 
+        <foreach item="deliveryListId" collection="array" open="(" separator="," close=")">
+            #{deliveryListId}
+        </foreach>
+    </delete>
+    
+</mapper>

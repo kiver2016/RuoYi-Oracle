@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改售后服务记录')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-afterSales-edit" th:object="${afterSalesService}">
+            <input name="afterSalesServiceId" th:field="*{afterSalesServiceId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red;">*</span>客户姓名：</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+						<input name="customer" class="form-control" type="text" required id="customer" th:field="*{customer}" >
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-white dropdown-toggle"
+								data-toggle="dropdown">
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							</ul>
+						</div>
+					</div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red;">*</span>地址：</label>
+                <div class="col-sm-8">
+                    <input name="address" th:field="*{address}" class="form-control" type="text" readonly="readonly" required="required">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">售后服务内容：</label>
+                <div class="col-sm-8">
+                    <textarea  name="serviceContext" class="form-control" placeholder="请输入文本">[[*{serviceContext}]]</textarea>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">现场照片：</label>
+                <div class="col-sm-8">
+                    <input name="scenePhotos" th:field="*{scenePhotos}" class="form-control" type="hidden">
+                    <input id="fileinput-demo-1" type="file" name="file">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">负责人：</label>
+                <div class="col-sm-8">
+                    <input name="hand" th:field="*{hand}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">售后服务日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="serviceDate" readonly="readonly" th:value="${#dates.format(afterSalesService.serviceDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: bootstrap-fileinput-css" />
+    <th:block th:include="include :: bootstrap-fileinput-js" />
+    <th:block th:include="include :: bootstrap-suggest-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "ims/afterSales";
+        $("#form-afterSales-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-afterSales-edit').serialize());
+            }
+        }
+
+        $("#customer").bsSuggest({
+	        url: ctx + "selectCustomerInfoList",
+	        idField: "customerInfoId",
+	        keyField: "customerName",
+	        effectiveFields:['customerName','customerPhone','customerAddress'],
+	        effectiveFieldsAlias:{'customerName': '顾客名称','customerPhone': '电话','customerAddress': '地址'},
+	    }).on('onDataRequestSuccess', function (e, result) {
+	        console.log('onDataRequestSuccess: ', result);
+	    }).on('onSetSelectValue', function (e, selectedData, selectedRawData) {
+	        console.log('onSetSelectValue: ', e.target.value, selectedData, selectedRawData.materialBrand);
+	        $("input[name='customer']").val(selectedRawData.customerName);
+	        $("input[name='phonenum']").val(selectedRawData.customerPhone);
+	        $("input[name='address']").val(selectedRawData.customerAddress);
+	    }).on('onUnsetSelectValue', function (e) {
+	        console.log("onUnsetSelectValue");
+	    });
+        
+        $(document).ready(function () {
+       	 $("#fileinput-demo-1").fileinput({
+                'theme': 'explorer-fas',
+                'uploadUrl': '/common/upload',
+                overwriteInitial: false,
+                initialPreviewAsData: true,
+                initialPreview: [
+                    "[[${afterSalesService.scenePhotos}]]"
+                ]
+            });
+
+            $("#fileinput-demo-1").on("fileuploaded", function (event, data, previewId, index) {
+                console.log(data.response);
+                if(data.response.code == 0){
+                    $('#scenePhotos').val(data.response.url);
+                }
+            });
+       });
+        
+        $("input[name='serviceDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

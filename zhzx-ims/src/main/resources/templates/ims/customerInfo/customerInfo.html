@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('客户信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <p>客户姓名：</p>
+                                <input type="text" name="customerName"/>
+                            </li>
+                            <!-- <li>
+                                <p>手机号：</p>
+                                <input type="text" name="customerPhone"/>
+                            </li>
+                            <li>
+                                <p>地址：</p>
+                                <input type="text" name="customerAddress"/>
+                            </li> -->
+                            <li>
+                                <p>设计师：</p>
+                                <input type="text" name="designer"/>
+                            </li>
+                            <li>
+                                <p>装修公司：</p>
+                                <input type="text" name="decorationCompany"/>
+                            </li>
+                            <li>
+                                <p>销售员：</p>
+                                <input type="text" name="salesperson"/>
+                            </li>
+                            <!-- <li>
+                                <p>订单状态：</p>
+                                <select name="orderStatus" th:with="type=${@dict.getType('order_status')}">
+                                    <option value="">所有</option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
+                            <li>
+                                <p>已付款：</p>
+                                <input type="text" name="orderPay"/>
+                            </li>
+                            <li>
+                                <p>是否结清：</p>
+                                <input type="text" name="sfjq"/>
+                            </li> -->
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="ims:customerInfo:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="ims:customerInfo:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ims:customerInfo:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ims:customerInfo:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('ims:customerInfo:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ims:customerInfo:remove')}]];
+        var detailFlag = [[${@permission.hasPermi('ims:customerInfo:detail')}]];
+        var orderStatusDatas = [[${@dict.getType('order_status')}]];
+        var prefix = ctx + "ims/customerInfo";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "客户信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'customerInfoId', 
+                    title : '主键',
+                    visible: false
+                },
+                {
+                    field : 'customerName', 
+                    title : '客户姓名'
+                },
+                {
+                    field : 'customerPhone', 
+                    title : '手机号'
+                },
+                {
+                    field : 'customerAddress', 
+                    title : '地址'
+                },
+                {
+                    field : 'designer', 
+                    title : '设计师'
+                },
+                {
+                    field : 'decorationCompany', 
+                    title : '装修公司'
+                },
+                {
+                    field : 'salesperson', 
+                    title : '销售员'
+                },
+                {
+                    field : 'orderStatus', 
+                    title : '订单状态',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(orderStatusDatas, value);
+                    }
+                },
+                {
+                    field : 'orderPay', 
+                    title : '已付款'
+                },
+                {
+                    field : 'sfjq', 
+                    title : '是否结清'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.customerInfoId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.customerInfoId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.customerInfoId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

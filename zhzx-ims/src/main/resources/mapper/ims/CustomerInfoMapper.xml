@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.CustomerInfoMapper">
+    
+    <resultMap type="CustomerInfo" id="CustomerInfoResult">
+        <result property="customerInfoId"    column="customer_info_id"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerPhone"    column="customer_phone"    />
+        <result property="customerAddress"    column="customer_address"    />
+        <result property="designer"    column="designer"    />
+        <result property="decorationCompany"    column="decoration_company"    />
+        <result property="salesperson"    column="salesperson"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="orderPay"    column="order_pay"    />
+        <result property="sfjq"    column="sfjq"    />
+    </resultMap>
+
+    <sql id="selectCustomerInfoVo">
+        select customer_info_id, customer_name, customer_phone, customer_address, designer, decoration_company, salesperson, order_status, order_pay, sfjq from customer_info
+    </sql>
+
+    <select id="selectCustomerInfoList" parameterType="CustomerInfo" resultMap="CustomerInfoResult">
+        <include refid="selectCustomerInfoVo"/>
+        <where>  
+            <if test="customerName != null and customerName !=''"> and customer_name like concat(concat('%', #{customerName}), '%')</if>
+            <if test="customerPhone != null and customerPhone !=''"> and customer_phone like concat(concat('%', #{customerPhone}), '%')</if>
+            <if test="customerAddress != null and customerAddress !=''"> and customer_address like concat(concat('%', #{customerAddress}), '%')</if>
+            <if test="designer != null and designer !=''"> and designer like concat(concat('%', #{designer}), '%')</if>
+            <if test="decorationCompany != null and decorationCompany !=''"> and decoration_company like concat(concat('%', #{decorationCompany}), '%')</if>
+            <if test="salesperson != null and salesperson !=''"> and salesperson like concat(concat('%', #{salesperson}), '%')</if>
+            <if test="orderStatus != null and orderStatus !=''"> and order_status like concat(concat('%', #{orderStatus}), '%')</if>
+            <if test="orderPay != null and orderPay !=''"> and order_pay like concat(concat('%', #{orderPay}), '%')</if>
+            <if test="sfjq != null and sfjq !=''"> and sfjq like concat(concat('%', #{sfjq}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCustomerInfoById" parameterType="Long" resultMap="CustomerInfoResult">
+    	<include refid="selectCustomerInfoVo"/>
+    	where customer_info_id = #{customerInfoId}
+    </select>
+        
+    <insert id="insertCustomerInfo" parameterType="CustomerInfo">
+        <selectKey keyProperty="customerInfoId" resultType="long" order="BEFORE">
+            SELECT seq_customer_info.NEXTVAL as customerInfoId FROM DUAL
+        </selectKey>
+        insert into customer_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerInfoId != null ">customer_info_id,</if>
+            <if test="customerName != null ">customer_name,</if>
+            <if test="customerPhone != null ">customer_phone,</if>
+            <if test="customerAddress != null ">customer_address,</if>
+            <if test="designer != null ">designer,</if>
+            <if test="decorationCompany != null ">decoration_company,</if>
+            <if test="salesperson != null ">salesperson,</if>
+            <if test="orderStatus != null ">order_status,</if>
+            <if test="orderPay != null ">order_pay,</if>
+            <if test="sfjq != null ">sfjq,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerInfoId != null ">#{customerInfoId},</if>
+            <if test="customerName != null ">#{customerName},</if>
+            <if test="customerPhone != null ">#{customerPhone},</if>
+            <if test="customerAddress != null ">#{customerAddress},</if>
+            <if test="designer != null ">#{designer},</if>
+            <if test="decorationCompany != null ">#{decorationCompany},</if>
+            <if test="salesperson != null ">#{salesperson},</if>
+            <if test="orderStatus != null ">#{orderStatus},</if>
+            <if test="orderPay != null ">#{orderPay},</if>
+            <if test="sfjq != null ">#{sfjq},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCustomerInfo" parameterType="CustomerInfo">
+        update customer_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerName != null ">customer_name = #{customerName},</if>
+            <if test="customerPhone != null ">customer_phone = #{customerPhone},</if>
+            <if test="customerAddress != null ">customer_address = #{customerAddress},</if>
+            <if test="designer != null ">designer = #{designer},</if>
+            <if test="decorationCompany != null ">decoration_company = #{decorationCompany},</if>
+            <if test="salesperson != null ">salesperson = #{salesperson},</if>
+            <if test="orderStatus != null ">order_status = #{orderStatus},</if>
+            <if test="orderPay != null ">order_pay = #{orderPay},</if>
+            <if test="sfjq != null ">sfjq = #{sfjq},</if>
+        </trim>
+        where customer_info_id = #{customerInfoId}
+    </update>
+
+    <delete id="deleteCustomerInfoById" parameterType="Long">
+        delete from customer_info where customer_info_id = #{customerInfoId}
+    </delete>
+
+    <delete id="deleteCustomerInfoByIds" parameterType="String">
+        delete from customer_info where customer_info_id in 
+        <foreach item="customerInfoId" collection="array" open="(" separator="," close=")">
+            #{customerInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

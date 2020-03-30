@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.OrderManagementMapper">
+    
+    <resultMap type="OrderManagement" id="OrderManagementResult">
+        <result property="ythrq"    column="ythrq"    />
+        <result property="fzr"    column="fzr"    />
+        <result property="sjshrq"    column="sjshrq"    />
+        <result property="deliverer"    column="deliverer"    />
+        <result property="orderManagementId"    column="order_management_id"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="customerAddress"    column="customer_address"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="remark"    column="remark"    />
+        <result property="prepaid"    column="prepaid"    />
+        <result property="payable"    column="payable"    />
+        <result property="sfyjq"    column="sfyjq"    />
+        <result property="wkzfrq"    column="wkzfrq"    />
+    </resultMap>
+
+    <sql id="selectOrderManagementVo">
+        select ythrq, fzr, sjshrq, deliverer, order_management_id, order_date, customer_name, customer_address, material_brand, remark, prepaid, payable, sfyjq, wkzfrq from order_management
+    </sql>
+
+    <select id="selectOrderManagementList" parameterType="OrderManagement" resultMap="OrderManagementResult">
+        <include refid="selectOrderManagementVo"/>
+        <where>  
+            <if test="customerName != null and customerName !=''"> and customer_name like concat(concat('%', #{customerName}), '%')</if>
+            <if test="customerAddress != null and customerAddress !=''"> and customer_address like concat(concat('%', #{customerAddress}), '%')</if>
+            <if test="materialBrand != null and materialBrand !=''"> and material_brand like concat(concat('%', #{materialBrand}), '%')</if>
+            <if test="prepaid != null and prepaid !=''"> and prepaid like concat(concat('%', #{prepaid}), '%')</if>
+            <if test="payable != null and payable !=''"> and payable like concat(concat('%', #{payable}), '%')</if>
+            <if test="sfyjq != null and sfyjq !=''"> and sfyjq like concat(concat('%', #{sfyjq}), '%')</if>
+            <if test="wkzfrq != null and wkzfrq !=''"> and wkzfrq like concat(concat('%', #{wkzfrq}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderManagementById" parameterType="Long" resultMap="OrderManagementResult">
+	    <include refid="selectOrderManagementVo"/>
+	    where order_management_id = #{orderManagementId}
+    </select>
+        
+    <insert id="insertOrderManagement" parameterType="OrderManagement">
+        <selectKey keyProperty="orderManagementId" resultType="long" order="BEFORE">
+            SELECT seq_order_management.NEXTVAL as orderManagementId FROM DUAL
+        </selectKey>
+        insert into order_management
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ythrq != null ">ythrq,</if>
+            <if test="fzr != null ">fzr,</if>
+            <if test="sjshrq != null ">sjshrq,</if>
+            <if test="deliverer != null ">deliverer,</if>
+            <if test="orderManagementId != null ">order_management_id,</if>
+            <if test="orderDate != null ">order_date,</if>
+            <if test="customerName != null ">customer_name,</if>
+            <if test="customerAddress != null ">customer_address,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="remark != null ">remark,</if>
+            <if test="prepaid != null ">prepaid,</if>
+            <if test="payable != null ">payable,</if>
+            <if test="sfyjq != null ">sfyjq,</if>
+            <if test="wkzfrq != null ">wkzfrq,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ythrq != null ">#{ythrq},</if>
+            <if test="fzr != null ">#{fzr},</if>
+            <if test="sjshrq != null ">#{sjshrq},</if>
+            <if test="deliverer !=null ">#{deliverer},</if>
+            <if test="orderManagementId != null ">#{orderManagementId},</if>
+            <if test="orderDate != null ">#{orderDate},</if>
+            <if test="customerName != null ">#{customerName},</if>
+            <if test="customerAddress != null ">#{customerAddress},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="remark != null ">#{remark},</if>
+            <if test="prepaid != null ">#{prepaid},</if>
+            <if test="payable != null ">#{payable},</if>
+            <if test="sfyjq != null ">#{sfyjq},</if>
+            <if test="wkzfrq != null ">#{wkzfrq},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderManagement" parameterType="OrderManagement">
+        update order_management
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ythrq != null ">ythrq = #{ythrq},</if>
+            <if test="fzr != null ">fzr = #{fzr},</if>
+            <if test="sjshrq != null ">sjshrq = #{sjshrq},</if>
+            <if test="deliverer!= null">deliverer=#{deliverer},</if>
+            <if test="orderDate != null ">order_date = #{orderDate},</if>
+            <if test="customerName != null ">customer_name = #{customerName},</if>
+            <if test="customerAddress != null ">customer_address = #{customerAddress},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="prepaid != null ">prepaid = #{prepaid},</if>
+            <if test="payable != null ">payable = #{payable},</if>
+            <if test="sfyjq != null ">sfyjq = #{sfyjq},</if>
+            <if test="wkzfrq != null ">wkzfrq = #{wkzfrq},</if>
+        </trim>
+        where order_management_id = #{orderManagementId}
+    </update>
+
+    <delete id="deleteOrderManagementById" parameterType="Long">
+        delete from order_management where order_management_id = #{orderManagementId}
+    </delete>
+
+    <delete id="deleteOrderManagementByIds" parameterType="String">
+        delete from order_management where order_management_id in 
+        <foreach item="orderManagementId" collection="array" open="(" separator="," close=")">
+            #{orderManagementId}
+        </foreach>
+    </delete>
+    
+</mapper>

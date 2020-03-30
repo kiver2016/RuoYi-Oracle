@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增送货清单主材')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-materialMainList-add">
+            <input id="parentId" name="parentId" class="form-control" type="hidden" th:value="${parentId}">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>产品名称：</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input name="materialName" class="form-control" type="text"
+									required id="materialName">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle"
+										data-toggle="dropdown">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									</ul>
+								</div>
+							</div>
+						</div>
+            </div>
+            <div class="form-group" style="display: none">    
+                <label class="col-sm-3 control-label">品牌：</label>
+                <div class="col-sm-8">
+                    <input name="materialBrand" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group" style="display: none">    
+                <label class="col-sm-3 control-label">型号：</label>
+                <div class="col-sm-8">
+                    <input name="materialModel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>规格：</label>
+                <div class="col-sm-8">
+                    <input name="materialNorms" class="form-control" type="text" required readonly="readonly">
+                </div>
+            </div>
+            <div class="form-group" style="display: none">    
+                <label class="col-sm-3 control-label">产品大类：</label>
+                <div class="col-sm-8">
+                    <input name="materialLargeClass" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group" style="display: none">    
+                <label class="col-sm-3 control-label">产品小类：</label>
+                <div class="col-sm-8">
+                    <input name="materialSubClass" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>单位：</label>
+                <div class="col-sm-8">
+                    <input name="materialUnit" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label"><span style="color: red; ">*</span>数量：</label>
+                <div class="col-sm-8">
+                    <input name="materialNum" class="form-control" type="text" required>
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: bootstrap-suggest-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "ims/materialMainList"
+        $("#form-materialMainList-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-materialMainList-add').serialize());
+            }
+        }
+        
+        $("#materialName").bsSuggest({
+	        url: ctx + "selectMaterialInfoList",
+	        idField: "materialId",
+	        keyField: "materialName",
+	        effectiveFields:['materialName','materialBrand','materialModel','materialNorms','materialLargeClass','materialSubClass'],
+	        effectiveFieldsAlias:{'materialName': '产品名称','materialBrand': '品牌','materialModel': '型号','materialNorms': '规格','materialLargeClass': '大类','materialSubClass': '小类'},
+	    }).on('onDataRequestSuccess', function (e, result) {
+	        console.log('onDataRequestSuccess: ', result);
+	    }).on('onSetSelectValue', function (e, selectedData, selectedRawData) {
+	        console.log('onSetSelectValue: ', e.target.value, selectedData, selectedRawData.materialBrand);
+	        $("input[name='materialModel']").val(selectedRawData.materialModel);
+	        $("input[name='materialNorms']").val(selectedRawData.materialNorms);
+	        $("input[name='materialLargeClass']").val(selectedRawData.materialLargeClass);
+	        $("input[name='materialSubClass']").val(selectedRawData.materialSubClass);
+	    }).on('onUnsetSelectValue', function (e) {
+	        console.log("onUnsetSelectValue");
+	    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialPutStorageSubMapper">
+    
+    <resultMap type="MaterialPutStorageSub" id="MaterialPutStorageSubResult">
+        <result property="materialPutSubId"    column="material_put_sub_id"    />
+        <result property="materialPutDate"    column="material_put_date"    />
+        <result property="materialOrder"    column="material_order"    />
+        <result property="customer"    column="customer"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="tCost"    column="t_cost"    />
+        <result property="tPerson"    column="t_person"    />
+        <result property="storage"    column="storage"    />
+        <result property="storageManger"    column="storage_manger"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialLargeClass"    column="material_large_class"    />
+        <result property="materialSubClass"    column="material_sub_class"    />
+        <result property="putNum"    column="put_num"    />
+        <result property="storageLocation"    column="storage_location"    />
+        <result property="remark"    column="remark"    />
+        <result property="parentId"    column="parent_id"    />
+    </resultMap>
+
+    <sql id="selectMaterialPutStorageSubVo">
+        select material_put_sub_id, material_put_date, material_order, customer, material_brand, t_cost, t_person, storage, storage_manger, material_name, material_model, material_norms, material_large_class, material_sub_class, put_num, storage_location, remark, parent_id from material_put_storage_sub
+    </sql>
+
+    <select id="selectMaterialPutStorageSubList" parameterType="MaterialPutStorageSub" resultMap="MaterialPutStorageSubResult">
+        <include refid="selectMaterialPutStorageSubVo"/>
+        <where>  
+            <if test="materialName != null "> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialModel != null "> and material_model like concat(concat('%', #{materialModel}), '%')</if>
+            <if test="materialNorms != null "> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>
+            <if test="materialLargeClass != null "> and material_large_class like concat(concat('%', #{materialLargeClass}), '%')</if>
+            <if test="materialSubClass != null "> and material_sub_class like concat(concat('%', #{materialSubClass}), '%')</if>
+            <if test="putNum != null "> and put_num like concat(concat('%', #{putNum}), '%')</if>
+            <if test="storageLocation != null "> and storage_location like concat(concat('%', #{storageLocation}), '%')</if>
+            <if test="parentId != null "> and parent_id like concat(concat('%', #{parentId}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialPutStorageSubById" parameterType="Long" resultMap="MaterialPutStorageSubResult">
+	    <include refid="selectMaterialPutStorageSubVo"/>
+	    where material_put_sub_id = #{materialPutSubId}
+    </select>
+        
+    <insert id="insertMaterialPutStorageSub" parameterType="MaterialPutStorageSub">
+        <selectKey keyProperty="materialPutSubId" resultType="long" order="BEFORE">
+            SELECT seq_material_put_storage_sub.NEXTVAL as materialPutSubId FROM DUAL
+        </selectKey>
+        insert into material_put_storage_sub
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialPutSubId != null ">material_put_sub_id,</if>
+            <if test="materialPutDate != null ">material_put_date,</if>
+            <if test="materialOrder != null ">material_order,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="tCost != null ">t_cost,</if>
+            <if test="tPerson != null ">t_person,</if>
+            <if test="storage != null ">storage,</if>
+            <if test="storageManger != null ">storage_manger,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialLargeClass != null ">material_large_class,</if>
+            <if test="materialSubClass != null ">material_sub_class,</if>
+            <if test="putNum != null ">put_num,</if>
+            <if test="storageLocation != null ">storage_location,</if>
+            <if test="remark != null ">remark,</if>
+            <if test="parentId != null ">parent_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialPutSubId != null ">#{materialPutSubId},</if>
+            <if test="materialPutDate != null ">#{materialPutDate},</if>
+            <if test="materialOrder != null ">#{materialOrder},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="tCost != null ">#{tCost},</if>
+            <if test="tPerson != null ">#{tPerson},</if>
+            <if test="storage != null ">#{storage},</if>
+            <if test="storageManger != null ">#{storageManger},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialLargeClass != null ">#{materialLargeClass},</if>
+            <if test="materialSubClass != null ">#{materialSubClass},</if>
+            <if test="putNum != null ">#{putNum},</if>
+            <if test="storageLocation != null ">#{storageLocation},</if>
+            <if test="remark != null ">#{remark},</if>
+            <if test="parentId != null ">#{parentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialPutStorageSub" parameterType="MaterialPutStorageSub">
+        update material_put_storage_sub
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialPutDate != null ">material_put_date = #{materialPutDate},</if>
+            <if test="materialOrder != null ">material_order = #{materialOrder},</if>
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="tCost != null ">t_cost = #{tCost},</if>
+            <if test="tPerson != null ">t_person = #{tPerson},</if>
+            <if test="storage != null ">storage = #{storage},</if>
+            <if test="storageManger != null ">storage_manger = #{storageManger},</if>
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialLargeClass != null ">material_large_class = #{materialLargeClass},</if>
+            <if test="materialSubClass != null ">material_sub_class = #{materialSubClass},</if>
+            <if test="putNum != null ">put_num = #{putNum},</if>
+            <if test="storageLocation != null ">storage_location = #{storageLocation},</if>
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+        </trim>
+        where material_put_sub_id = #{materialPutSubId}
+    </update>
+
+    <delete id="deleteMaterialPutStorageSubById" parameterType="Long">
+        delete from material_put_storage_sub where material_put_sub_id = #{materialPutSubId}
+    </delete>
+
+    <delete id="deleteMaterialPutStorageSubByIds" parameterType="String">
+        delete from material_put_storage_sub where material_put_sub_id in 
+        <foreach item="materialPutSubId" collection="array" open="(" separator="," close=")">
+            #{materialPutSubId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.ImsHomeMapper">
+    
+    <resultMap type="ImsHome" id="ImsHomeResult">
+        <result property="imsHomeId"    column="ims_home_id"    />
+        <result property="imsHomeTitle"    column="ims_home_title"    />
+        <result property="imsHomeContext"    column="ims_home_context"    />
+        <result property="imsHomeType"    column="ims_home_type"    />
+        <result property="uploadFile"    column="upload_file"    />
+        <result property="filename"    column="filename"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectImsHomeVo">
+        select filename,upload_file,ims_home_id, ims_home_title, ims_home_context, ims_home_type, create_by, create_time, update_by, update_time from ims_home
+    </sql>
+
+    <select id="selectImsHomeList" parameterType="ImsHome" resultMap="ImsHomeResult">
+        select * from (
+        <include refid="selectImsHomeVo"/>
+        <where>
+        	<if test="imsHomeType != null and imsHomeType !=''"> and ims_home_type like concat(concat('%', #{imsHomeType}), '%')</if>
+        	<if test="imsHomeTitle != null and imsHomeTitle !=''"> and ims_home_title like concat(concat('%', #{imsHomeTitle}), '%')</if>
+        	<if test="createBy != null and createBy !=''"> and create_by like concat(concat('%', #{createBy}), '%')</if>
+        	<if test="params.beginCreateTime != null and params.beginCreateTime != ''"><!-- 开始时间检索 -->
+				AND create_time &gt;= to_date(#{params.beginCreateTime},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endCreateTime != null and params.endCreateTime != ''"><!-- 结束时间检索 -->
+				AND create_time &lt;= to_date(#{params.endCreateTime},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+        </where>
+        order by create_time desc
+        ) where   rownum &lt;=5
+    </select>
+    
+    <select id="selectImsHomeById" parameterType="Long" resultMap="ImsHomeResult">
+    	<include refid="selectImsHomeVo"/>
+    	where ims_home_id = #{imsHomeId}
+    </select>
+        
+    <insert id="insertImsHome" parameterType="ImsHome">
+        <selectKey keyProperty="imsHomeId" resultType="long" order="BEFORE">
+            SELECT seq_ims_home.NEXTVAL as imsHomeId FROM DUAL
+        </selectKey>
+        insert into ims_home
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imsHomeId != null ">ims_home_id,</if>
+            <if test="imsHomeTitle != null ">ims_home_title,</if>
+            <if test="imsHomeContext != null ">ims_home_context,</if>
+            <if test="imsHomeType != null ">ims_home_type,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="uploadFile != null ">upload_file,</if>
+            <if test="filename != null ">filename,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imsHomeId != null ">#{imsHomeId},</if>
+            <if test="imsHomeTitle != null ">#{imsHomeTitle},</if>
+            <if test="imsHomeContext != null ">#{imsHomeContext},</if>
+            <if test="imsHomeType != null ">#{imsHomeType},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="uploadFile != null ">#{uploadFile},</if>
+            <if test="filename != null ">#{filename},</if>
+         </trim>
+    </insert>
+
+    <update id="updateImsHome" parameterType="ImsHome">
+        update ims_home
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imsHomeTitle != null ">ims_home_title = #{imsHomeTitle},</if>
+            <if test="imsHomeContext != null ">ims_home_context = #{imsHomeContext},</if>
+            <if test="imsHomeType != null ">ims_home_type = #{imsHomeType},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="uploadFile != null ">upload_file = #{uploadFile},</if>
+            <if test="filename != null ">filename = #{filename},</if>
+        </trim>
+        where ims_home_id = #{imsHomeId}
+    </update>
+
+    <delete id="deleteImsHomeById" parameterType="Long">
+        delete from ims_home where ims_home_id = #{imsHomeId}
+    </delete>
+
+    <delete id="deleteImsHomeByIds" parameterType="String">
+        delete from ims_home where ims_home_id in 
+        <foreach item="imsHomeId" collection="array" open="(" separator="," close=")">
+            #{imsHomeId}
+        </foreach>
+    </delete>
+    
+</mapper>

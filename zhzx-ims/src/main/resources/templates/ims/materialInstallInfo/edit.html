@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<th:block th:include="include :: header('修改安装信息')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-materialInstallInfo-edit"
+			th:object="${materialInstallInfo}">
+			<input name="materialInstallInfoId"
+				th:field="*{materialInstallInfoId}" type="hidden">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>客户姓名：</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+							<input name="customer" class="form-control" type="text" required id="customer" th:field="*{customer}">
+							<div class="input-group-btn">
+								<button type="button" class="btn btn-white dropdown-toggle"
+									data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu dropdown-menu-right" role="menu">
+								</ul>
+							</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>地址：</label>
+						<div class="col-sm-8">
+							<input name="address" th:field="*{address}" class="form-control"
+								type="text" required readonly>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>安装产品：</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<input name="installMaterial" class="form-control" type="text"
+									required id="installMaterial" th:field="*{installMaterial}">
+								<div class="input-group-btn">
+									<button type="button" class="btn btn-white dropdown-toggle"
+										data-toggle="dropdown">
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right" role="menu">
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>型号：</label>
+						<div class="col-sm-8">
+							<input name="materialModel" th:field="*{materialModel}"
+								class="form-control" type="text" required readonly="readonly">
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>规格：</label>
+						<div class="col-sm-8">
+							<input name="materialNorms" th:field="*{materialNorms}"
+								class="form-control" type="text" required readonly="readonly">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>面积：</label>
+						<div class="col-sm-8">
+							<input name="materialArea" th:field="*{materialArea}"
+								class="form-control" type="text" required>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>安装方式：</label>
+						<div class="col-sm-8">
+							<input name="installWay" th:field="*{installWay}"
+								class="form-control" type="text" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>安装日期：</label>
+						<div class="col-sm-8">
+							<div class="input-group date">
+								<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+								<input name="installDate" th:value="${#dates.format(materialInstallInfo.installDate, 'yyyy-MM-dd')}"
+									class="form-control" type="text" required>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>安装费用：</label>
+						<div class="col-sm-8">
+							<input name="installCost" th:field="*{installCost}"
+								class="form-control" type="text" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>安装人员：</label>
+						<div class="col-sm-8">
+							<input name="installPerson" th:field="*{installPerson}"
+								class="form-control" type="text" required>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-sm-4 control-label"><span
+							style="color: red;">*</span>经办人：</label>
+						<div class="col-sm-8">
+							<input name="operoter" th:field="*{operoter}"
+								class="form-control" type="text" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: bootstrap-suggest-js" />
+	<th:block th:include="include :: datetimepicker-js" />
+	<script type="text/javascript">
+		var prefix = ctx + "ims/materialInstallInfo";
+		$("#form-materialInstallInfo-edit").validate({
+			focusCleanup : true
+		});
+
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/edit", $(
+						'#form-materialInstallInfo-edit').serialize());
+			}
+		}
+		
+		$("input[name='installDate']").datetimepicker({
+			format : "yyyy-mm-dd",
+			minView : "month",
+			autoclose : true
+		});
+		
+		$("#customer").bsSuggest({
+	        url: ctx + "selectCustomerInfoList",
+	        idField: "customerInfoId",
+	        keyField: "customerName",
+	        effectiveFields:['customerName','customerPhone','customerAddress'],
+	        effectiveFieldsAlias:{'customerName': '顾客名称','customerPhone': '电话','customerAddress': '地址'},
+	    }).on('onDataRequestSuccess', function (e, result) {
+	        console.log('onDataRequestSuccess: ', result);
+	    }).on('onSetSelectValue', function (e, selectedData, selectedRawData) {
+	        console.log('onSetSelectValue: ', e.target.value, selectedData, selectedRawData.materialBrand);
+	        $("input[name='customer']").val(selectedRawData.customerName);
+	        $("input[name='phonenum']").val(selectedRawData.customerPhone);
+	        $("input[name='address']").val(selectedRawData.customerAddress);
+	    }).on('onUnsetSelectValue', function (e) {
+	        console.log("onUnsetSelectValue");
+	    });
+		
+		$("#installMaterial").bsSuggest({
+	        url: ctx + "selectMaterialInfoList",
+	        idField: "materialId",
+	        keyField: "materialName",
+	        effectiveFields:['materialName','materialBrand','materialModel','materialNorms','materialLargeClass','materialSubClass'],
+	        effectiveFieldsAlias:{'materialName': '产品名称','materialBrand': '品牌','materialModel': '型号','materialNorms': '规格','materialLargeClass': '大类','materialSubClass': '小类'},
+	    }).on('onDataRequestSuccess', function (e, result) {
+	        console.log('onDataRequestSuccess: ', result);
+	    }).on('onSetSelectValue', function (e, selectedData, selectedRawData) {
+	        console.log('onSetSelectValue: ', e.target.value, selectedData, selectedRawData.materialBrand);
+	        $("input[name='materialModel']").val(selectedRawData.materialModel);
+	        $("input[name='materialNorms']").val(selectedRawData.materialNorms);
+	        $("input[name='materialLargeClass']").val(selectedRawData.materialLargeClass);
+	        $("input[name='materialSubClass']").val(selectedRawData.materialSubClass);
+	    }).on('onUnsetSelectValue', function (e) {
+	        console.log("onUnsetSelectValue");
+	    });
+	</script>
+</body>
+</html>

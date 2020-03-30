@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialPutStorageMapper">
+    
+    <resultMap type="MaterialPutStorage" id="MaterialPutStorageResult">
+        <result property="materialPutId"    column="material_put_id"    />
+        <result property="materialPutDate"    column="material_put_date"    />
+        <result property="materialOrder"    column="material_order"    />
+        <result property="customer"    column="customer"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="tCost"    column="t_cost"    />
+        <result property="tPerson"    column="t_person"    />
+        <result property="storage"    column="storage"    />
+        <result property="storageManger"    column="storage_manger"    />
+        <result property="confirmPutIn"    column="confirmPutIn"    />
+    </resultMap>
+
+    <sql id="selectMaterialPutStorageVo">
+        select material_put_id, material_put_date, material_order, customer, material_brand, t_cost, t_person, storage, storage_manger, confirmPutIn from material_put_storage
+    </sql>
+
+    <select id="selectMaterialPutStorageList" parameterType="MaterialPutStorage" resultMap="MaterialPutStorageResult">
+        <include refid="selectMaterialPutStorageVo"/>
+        <where>  
+            <if test="params.beginMaterialPutDate != null and params.beginMaterialPutDate != ''"><!-- 开始时间检索 -->
+				AND material_put_date &gt;= to_date(#{params.beginMaterialPutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endMaterialPutDate != null and params.endMaterialPutDate != ''"><!-- 结束时间检索 -->
+				AND material_put_date &lt;= to_date(#{params.endMaterialPutDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+            <if test="materialOrder != null and materialOrder !=''"> and material_order = #{materialOrder}</if>
+            <if test="customer != null and customer !=''"> and customer = #{customer}</if>
+            <if test="materialBrand != null and materialBrand !=''"> and material_brand = #{materialBrand}</if>
+            <if test="tCost != null and tCost !=''"> and t_cost = #{tCost}</if>
+            <if test="tPerson != null and tPerson !=''"> and t_person = #{tPerson}</if>
+            <if test="storage != null and storage !=''"> and storage = #{storage}</if>
+            <if test="storageManger != null and storageManger !=''"> and storage_manger = #{storageManger}</if>
+            <if test="confirmPutIn != null and confirmPutIn !=''"> and confirmPutIn = #{confirmPutIn}</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialPutStorageById" parameterType="Long" resultMap="MaterialPutStorageResult">
+        <include refid="selectMaterialPutStorageVo"/>
+        where material_put_id = #{materialPutId}
+    </select>
+        
+    <insert id="insertMaterialPutStorage" parameterType="MaterialPutStorage">
+        <selectKey keyProperty="materialPutId" resultType="long" order="BEFORE">
+            SELECT seq_material_put_storage.NEXTVAL as materialPutId FROM DUAL
+        </selectKey>
+        insert into material_put_storage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialPutId != null ">material_put_id,</if>
+            <if test="materialPutDate != null ">material_put_date,</if>
+            <if test="materialOrder != null ">material_order,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="tCost != null ">t_cost,</if>
+            <if test="tPerson != null ">t_person,</if>
+            <if test="storage != null ">storage,</if>
+            <if test="storageManger != null ">storage_manger,</if>
+            <if test="confirmPutIn != null ">confirmPutIn,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialPutId != null ">#{materialPutId},</if>
+            <if test="materialPutDate != null ">#{materialPutDate},</if>
+            <if test="materialOrder != null ">#{materialOrder},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="tCost != null ">#{tCost},</if>
+            <if test="tPerson != null ">#{tPerson},</if>
+            <if test="storage != null ">#{storage},</if>
+            <if test="storageManger != null ">#{storageManger},</if>
+            <if test="confirmPutIn != null ">#{confirmPutIn},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialPutStorage" parameterType="MaterialPutStorage">
+        update material_put_storage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialPutDate != null ">material_put_date = #{materialPutDate},</if>
+            <if test="materialOrder != null ">material_order = #{materialOrder},</if>
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="tCost != null ">t_cost = #{tCost},</if>
+            <if test="tPerson != null ">t_person = #{tPerson},</if>
+            <if test="storage != null ">storage = #{storage},</if>
+            <if test="storageManger != null ">storage_manger = #{storageManger},</if>
+            <if test="confirmPutIn != null ">confirmPutIn = #{confirmPutIn},</if>
+        </trim>
+        where material_put_id = #{materialPutId}
+    </update>
+
+    <delete id="deleteMaterialPutStorageById" parameterType="Long">
+        delete from material_put_storage where material_put_id = #{materialPutId}
+    </delete>
+
+    <delete id="deleteMaterialPutStorageByIds" parameterType="String">
+        delete from material_put_storage where material_put_id in 
+        <foreach item="materialPutId" collection="array" open="(" separator="," close=")">
+            #{materialPutId}
+        </foreach>
+    </delete>
+    
+</mapper>

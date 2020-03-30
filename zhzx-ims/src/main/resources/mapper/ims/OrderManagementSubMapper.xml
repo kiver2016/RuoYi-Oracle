@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.OrderManagementSubMapper">
+    
+    <resultMap type="OrderManagementSub" id="OrderManagementSubResult">
+        <result property="orderManagementSubId"    column="order_management_sub_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialLargeClass"    column="material_large_class"    />
+        <result property="materialSubClass"    column="material_sub_class"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="materialNum"    column="material_num"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="totalPrice"    column="total_price"    />
+        <result property="prepaid"    column="prepaid"    />
+        <result property="payable"    column="payable"    />
+        <result property="parentId"    column="parent_id"    />
+    </resultMap>
+
+    <sql id="selectOrderManagementSubVo">
+        select order_management_sub_id, material_name, material_brand, material_model, material_norms, material_large_class, material_sub_class, material_unit, material_num, unit_price, total_price, prepaid, payable, parent_id from order_management_sub
+    </sql>
+
+    <select id="selectOrderManagementSubList" parameterType="OrderManagementSub" resultMap="OrderManagementSubResult">
+        <include refid="selectOrderManagementSubVo"/>
+        <where>  
+            <!-- <if test="materialName != null "> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialBrand != null "> and material_brand like concat(concat('%', #{materialBrand}), '%')</if>
+            <if test="materialModel != null "> and material_model like concat(concat('%', #{materialModel}), '%')</if>
+            <if test="materialNorms != null "> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>
+            <if test="materialLargeClass != null "> and material_large_class like concat(concat('%', #{materialLargeClass}), '%')</if>
+            <if test="materialSubClass != null "> and material_sub_class like concat(concat('%', #{materialSubClass}), '%')</if>
+            <if test="materialUnit != null "> and material_unit like concat(concat('%', #{materialUnit}), '%')</if>
+            <if test="materialNum != null "> and material_num like concat(concat('%', #{materialNum}), '%')</if>
+            <if test="unitPrice != null "> and unit_price like concat(concat('%', #{unitPrice}), '%')</if>
+            <if test="totalPrice != null "> and total_price like concat(concat('%', #{totalPrice}), '%')</if>
+            <if test="prepaid != null "> and prepaid like concat(concat('%', #{prepaid}), '%')</if> 
+            <if test="payable != null "> and payable like concat(concat('%', #{payable}), '%')</if>-->
+            <if test="parentId != null and parentId !=''"> and parent_id like concat(concat('%', #{parentId}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderManagementSubById" parameterType="Long" resultMap="OrderManagementSubResult">
+    	<include refid="selectOrderManagementSubVo"/>
+    	where order_management_sub_id = #{orderManagementSubId}
+    </select>
+        
+    <insert id="insertOrderManagementSub" parameterType="OrderManagementSub">
+        <selectKey keyProperty="orderManagementSubId" resultType="long" order="BEFORE">
+            SELECT seq_order_management_sub.NEXTVAL as orderManagementSubId FROM DUAL
+        </selectKey>
+        insert into order_management_sub
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderManagementSubId != null ">order_management_sub_id,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialLargeClass != null ">material_large_class,</if>
+            <if test="materialSubClass != null ">material_sub_class,</if>
+            <if test="materialUnit != null ">material_unit,</if>
+            <if test="materialNum != null ">material_num,</if>
+            <if test="unitPrice != null ">unit_price,</if>
+            <if test="totalPrice != null ">total_price,</if>
+            <if test="prepaid != null ">prepaid,</if>
+            <if test="payable != null ">payable,</if>
+            <if test="parentId != null ">parent_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderManagementSubId != null ">#{orderManagementSubId},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialLargeClass != null ">#{materialLargeClass},</if>
+            <if test="materialSubClass != null ">#{materialSubClass},</if>
+            <if test="materialUnit != null ">#{materialUnit},</if>
+            <if test="materialNum != null ">#{materialNum},</if>
+            <if test="unitPrice != null ">#{unitPrice},</if>
+            <if test="totalPrice != null ">#{totalPrice},</if>
+            <if test="prepaid != null ">#{prepaid},</if>
+            <if test="payable != null ">#{payable},</if>
+            <if test="parentId != null ">#{parentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderManagementSub" parameterType="OrderManagementSub">
+        update order_management_sub
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialLargeClass != null ">material_large_class = #{materialLargeClass},</if>
+            <if test="materialSubClass != null ">material_sub_class = #{materialSubClass},</if>
+            <if test="materialUnit != null ">material_unit = #{materialUnit},</if>
+            <if test="materialNum != null ">material_num = #{materialNum},</if>
+            <if test="unitPrice != null ">unit_price = #{unitPrice},</if>
+            <if test="totalPrice != null ">total_price = #{totalPrice},</if>
+            <if test="prepaid != null ">prepaid = #{prepaid},</if>
+            <if test="payable != null ">payable = #{payable},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+        </trim>
+        where order_management_sub_id = #{orderManagementSubId}
+    </update>
+
+    <delete id="deleteOrderManagementSubById" parameterType="Long">
+        delete from order_management_sub where order_management_sub_id = #{orderManagementSubId}
+    </delete>
+
+    <delete id="deleteOrderManagementSubByIds" parameterType="String">
+        delete from order_management_sub where order_management_sub_id in 
+        <foreach item="orderManagementSubId" collection="array" open="(" separator="," close=")">
+            #{orderManagementSubId}
+        </foreach>
+    </delete>
+    
+</mapper>

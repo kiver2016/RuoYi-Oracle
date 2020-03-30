@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialInstallInfoMapper">
+    
+    <resultMap type="MaterialInstallInfo" id="MaterialInstallInfoResult">
+        <result property="materialInstallInfoId"    column="material_install_info_id"    />
+        <result property="customer"    column="customer"    />
+        <result property="address"    column="address"    />
+        <result property="installPerson"    column="install_person"    />
+        <result property="installMaterial"    column="install_material"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialArea"    column="material_area"    />
+        <result property="installWay"    column="install_way"    />
+        <result property="installDate"    column="install_date"    />
+        <result property="installCost"    column="install_cost"    />
+        <result property="operoter"    column="operoter"    />
+    </resultMap>
+
+    <sql id="selectMaterialInstallInfoVo">
+        select material_install_info_id, customer, address, install_person, install_material, material_model, material_norms, material_area, install_way, install_date, install_cost, operoter from material_install_info
+    </sql>
+
+    <select id="selectMaterialInstallInfoList" parameterType="MaterialInstallInfo" resultMap="MaterialInstallInfoResult">
+        <include refid="selectMaterialInstallInfoVo"/>
+        <where>
+        	<if test="customer != null and customer !=''"> and customer like concat(concat('%', #{customer}), '%')</if>  
+        	<if test="address != null and address !=''"> and address like concat(concat('%', #{address}), '%')</if>  
+        	<if test="installPerson != null and installPerson !=''"> and install_person like concat(concat('%', #{installPerson}), '%')</if>  
+        	<if test="installMaterial != null and installMaterial !=''"> and install_material like concat(concat('%', #{installMaterial}), '%')</if>  
+        	<if test="materialModel != null and materialModel !=''"> and material_model like concat(concat('%', #{materialModel}), '%')</if>  
+        	<if test="materialNorms != null and materialNorms !=''"> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>  
+        	<if test="materialArea != null and materialArea !=''"> and material_area like concat(concat('%', #{materialArea}), '%')</if>  
+        	<if test="installWay != null and installWay !=''"> and install_way like concat(concat('%', #{installWay}), '%')</if>
+        	<if test="params.beginInstallDate != null and params.beginInstallDate != ''"><!-- 开始时间检索 -->
+				AND install_date &gt;= to_date(#{params.beginInstallDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endInstallDate != null and params.endInstallDate != ''"><!-- 结束时间检索 -->
+				AND install_date &lt;= to_date(#{params.endInstallDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="installCost != null and installCost !=''"> and install_cost like concat(concat('%', #{installCost}), '%')</if>
+        	<if test="operoter != null and operoter !=''"> and operoter like concat(concat('%', #{operoter}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialInstallInfoById" parameterType="Long" resultMap="MaterialInstallInfoResult">
+    	<include refid="selectMaterialInstallInfoVo"/>
+    	where material_install_info_id = #{materialInstallInfoId}
+    </select>
+        
+    <insert id="insertMaterialInstallInfo" parameterType="MaterialInstallInfo">
+        <selectKey keyProperty="materialInstallInfoId" resultType="long" order="BEFORE">
+            SELECT seq_material_install_info.NEXTVAL as materialInstallInfoId FROM DUAL
+        </selectKey>
+        insert into material_install_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialInstallInfoId != null ">material_install_info_id,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="address != null ">address,</if>
+            <if test="installPerson != null ">install_person,</if>
+            <if test="installMaterial != null ">install_material,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialArea != null ">material_area,</if>
+            <if test="installWay != null ">install_way,</if>
+            <if test="installDate != null ">install_date,</if>
+            <if test="installCost != null ">install_cost,</if>
+            <if test="operoter != null ">operoter,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialInstallInfoId != null ">#{materialInstallInfoId},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="address != null ">#{address},</if>
+            <if test="installPerson != null ">#{installPerson},</if>
+            <if test="installMaterial != null ">#{installMaterial},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialArea != null ">#{materialArea},</if>
+            <if test="installWay != null ">#{installWay},</if>
+            <if test="installDate != null ">#{installDate},</if>
+            <if test="installCost != null ">#{installCost},</if>
+            <if test="operoter != null ">#{operoter},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialInstallInfo" parameterType="MaterialInstallInfo">
+        update material_install_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="address != null ">address = #{address},</if>
+            <if test="installPerson != null ">install_person = #{installPerson},</if>
+            <if test="installMaterial != null ">install_material = #{installMaterial},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialArea != null ">material_area = #{materialArea},</if>
+            <if test="installWay != null ">install_way = #{installWay},</if>
+            <if test="installDate != null ">install_date = #{installDate},</if>
+            <if test="installCost != null ">install_cost = #{installCost},</if>
+            <if test="operoter != null ">operoter = #{operoter},</if>
+        </trim>
+        where material_install_info_id = #{materialInstallInfoId}
+    </update>
+
+    <delete id="deleteMaterialInstallInfoById" parameterType="Long">
+        delete from material_install_info where material_install_info_id = #{materialInstallInfoId}
+    </delete>
+
+    <delete id="deleteMaterialInstallInfoByIds" parameterType="String">
+        delete from material_install_info where material_install_info_id in 
+        <foreach item="materialInstallInfoId" collection="array" open="(" separator="," close=")">
+            #{materialInstallInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('订单信息列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li class="select-time">
+                                <p>下单日期：</p>
+                                <input type="text"  id="startTime" placeholder="开始时间" name="params[beginOrderDate]"/>
+                                <span>-</span>
+                                <input type="text"  id="endTime" placeholder="结束时间" name="params[endOrderDate]"/>
+                            </li>
+                            <li>
+                                <p>客户名称：</p>
+                                <input type="text" name="customerName"/>
+                            </li>
+                            <li>
+                                <p>品牌：</p>
+                                <input type="text" name="materialBrand"/>
+                            </li>
+                            <li>
+                                <p>是否已结清：</p>
+                                <input type="text" name="sfyjq"/>
+                            </li>
+                            <li class="select-time">
+                                <p>预提货日期：</p>
+                                <input type="text"  id="startTime" placeholder="开始时间" name="params[beginYthrq]"/>
+                                <span>-</span>
+                                <input type="text"  id="endTime" placeholder="结束时间" name="params[endYthrq]"/>
+                            </li>
+                            <li class="select-time">
+                                <p>实际送货日期：</p>
+                                <input type="text"  id="startTime" placeholder="开始时间" name="params[beginSjshrq]"/>
+                                <span>-</span>
+                                <input type="text"  id="endTime" placeholder="结束时间" name="params[endSjshrq]"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="ims:management:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="ims:management:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ims:management:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ims:management:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+    
+	 // laydate 时间控件绑定
+	    
+	
+	
+	
+		function initRangeDatePicker(suffix) {
+		    var laydate = layui.laydate;
+		    var startId = 'startTime' + suffix;
+		    var endId = 'endTime' + suffix;
+		    var startDate = laydate.render({
+		        elem: '#' + startId,
+		        max: $('#' + endId).val(),
+		        theme: 'molv',
+		        trigger: 'click',
+		        done: function (value, date) {
+		            // 结束时间大于开始时间
+		            if (value !== '') {
+		                endDate.config.min.year = date.year;
+		                endDate.config.min.month = date.month - 1;
+		                endDate.config.min.date = date.date;
+		            } else {
+		                endDate.config.min.year = '';
+		                endDate.config.min.month = '';
+		                endDate.config.min.date = '';
+		            }
+		        }
+		    });
+		    var endDate = laydate.render({
+		        elem: '#' + endId,
+		        min: $('#' + startId).val(),
+		        theme: 'molv',
+		        trigger: 'click',
+		        done: function (value, date) {
+		            // 开始时间小于结束时间
+		            if (value !== '') {
+		                startDate.config.max.year = date.year;
+		                startDate.config.max.month = date.month - 1;
+		                startDate.config.max.date = date.date;
+		            } else {
+		                startDate.config.max.year = '';
+		                startDate.config.max.month = '';
+		                startDate.config.max.date = '';
+		            }
+		        }
+		    });
+		}
+    
+    
+    
+        var editFlag = [[${@permission.hasPermi('ims:management:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ims:management:remove')}]];
+        var detailFlag = [[${@permission.hasPermi('ims:management:detail')}]];
+        var prefix = ctx + "ims/management";
+
+        $(function() {
+        	
+        	if ($(".select-time").length > 0) {
+    	        layui.use('laydate', function () {
+    	            var inputs = $("input[id^='startTime']");
+    	            for(var i = 0; i < inputs.length; i++) {
+    	                var startId = $(inputs[i]).attr('id');
+    	                var suffix = startId.substring(9);
+    	                initRangeDatePicker(suffix);
+    	            }
+    	        });
+    	    }
+        	
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                detailUrl: prefix + "/detail/{id}",
+                modalName: "订单信息",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'orderManagementId', 
+                    title : '主键',
+                    visible: false
+                },
+                {
+                    field : 'orderDate', 
+                    title : '下单日期',
+                    formatter: function (value, row, index) {
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'customerName', 
+                    title : '客户名称'
+                },
+                {
+                    field : 'customerAddress', 
+                    title : '客户地址'
+                },
+                {
+                    field : 'materialBrand', 
+                    title : '品牌'
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                },
+                {
+                    field : 'prepaid', 
+                    title : '已预付'
+                },
+                {
+                    field : 'payable', 
+                    title : '应付尾款'
+                },
+                {
+                    field : 'sfyjq', 
+                    title : '是否已结清'
+                },
+                {
+                    field : 'wkzfrq', 
+                    title : '尾款支付日期',
+                    formatter: function (value, row, index) {
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'ythrq', 
+                    title : '预提货日期',
+                    formatter: function (value, row, index) {
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'fzr', 
+                    title : '负责人'
+                },
+                {
+                    field : 'sjshrq', 
+                    title : '实际送货日期',
+                    formatter: function (value, row, index) {
+                    	if(value!=null)
+                        	return value.substr(0,10);
+                    	else
+                        	return value;
+                    }
+                },
+                {
+                    field : 'deliverer', 
+                    title : '送货人'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editFull(\'' + row.orderManagementId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.orderManagementId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.orderManagementId + '\')"><i class="fa fa-search"></i>详细</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

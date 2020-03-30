@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('材料入库信息子列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li class="select-time">
+                                <p>入库时间：</p>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginMaterialPutDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endMaterialPutDate]"/>
+                            </li>
+                            <li>
+                                <p>订单号：</p>
+                                <input type="text" name="materialOrder"/>
+                            </li>
+                            <li>
+                                <p>客户：</p>
+                                <input type="text" name="customer"/>
+                            </li>
+                            <li>
+                                <p>品牌：</p>
+                                <input type="text" name="materialBrand"/>
+                            </li>
+                            <li>
+                                <p>运输费用：</p>
+                                <input type="text" name="tCost"/>
+                            </li>
+                            <li>
+                                <p>运输人：</p>
+                                <input type="text" name="tPerson"/>
+                            </li>
+                            <li>
+                                <p>库房：</p>
+                                <input type="text" name="storage"/>
+                            </li>
+                            <li>
+                                <p>库管员：</p>
+                                <input type="text" name="storageManger"/>
+                            </li>
+                            <li>
+                                <p>产品名称：</p>
+                                <input type="text" name="materialName"/>
+                            </li>
+                            <li>
+                                <p>型号：</p>
+                                <input type="text" name="materialModel"/>
+                            </li>
+                            <li>
+                                <p>规格：</p>
+                                <input type="text" name="materialNorms"/>
+                            </li>
+                            <li>
+                                <p>产品大类：</p>
+                                <input type="text" name="materialLargeClass"/>
+                            </li>
+                            <li>
+                                <p>产品小类：</p>
+                                <input type="text" name="materialSubClass"/>
+                            </li>
+                            <li>
+                                <p>入库数量：</p>
+                                <input type="text" name="putNum"/>
+                            </li>
+                            <li>
+                                <p>存放位置：</p>
+                                <input type="text" name="storageLocation"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="ims:materialPutStorageSub:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="ims:materialPutStorageSub:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="ims:materialPutStorageSub:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="ims:materialPutStorageSub:export">
+                    <i class="fa fa-download"></i> 导出
+                 </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('ims:materialPutStorageSub:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('ims:materialPutStorageSub:remove')}]];
+        var prefix = ctx + "ims/materialPutStorageSub";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "材料入库信息子",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field : 'materialPutSubId', 
+                    title : '主键',
+                    visible: false
+                },
+                {
+                    field : 'materialPutDate', 
+                    title : '入库时间'
+                },
+                {
+                    field : 'materialOrder', 
+                    title : '订单号'
+                },
+                {
+                    field : 'customer', 
+                    title : '客户'
+                },
+                {
+                    field : 'materialBrand', 
+                    title : '品牌'
+                },
+                {
+                    field : 'tCost', 
+                    title : '运输费用'
+                },
+                {
+                    field : 'tPerson', 
+                    title : '运输人'
+                },
+                {
+                    field : 'storage', 
+                    title : '库房'
+                },
+                {
+                    field : 'storageManger', 
+                    title : '库管员'
+                },
+                {
+                    field : 'materialName', 
+                    title : '产品名称'
+                },
+                {
+                    field : 'materialModel', 
+                    title : '型号'
+                },
+                {
+                    field : 'materialNorms', 
+                    title : '规格'
+                },
+                {
+                    field : 'materialLargeClass', 
+                    title : '产品大类'
+                },
+                {
+                    field : 'materialSubClass', 
+                    title : '产品小类'
+                },
+                {
+                    field : 'putNum', 
+                    title : '入库数量'
+                },
+                {
+                    field : 'storageLocation', 
+                    title : '存放位置'
+                },
+                {
+                    field : 'remark', 
+                    title : '备注'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.materialPutSubId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.materialPutSubId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

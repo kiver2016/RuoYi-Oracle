@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.ContractInfoMapper">
+    
+    <resultMap type="ContractInfo" id="ContractInfoResult">
+        <result property="contractInfoId"    column="contract_info_id"    />
+        <result property="contractDate"    column="contract_date"    />
+        <result property="contractLimit"    column="contract_limit"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="salesperson"    column="salesperson"    />
+        <result property="remark"    column="remark"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="customer"    column="customer"    />
+        <result property="phone"    column="phone"    />
+        <result property="address"    column="address"    />
+        <result property="contractNum"    column="contractNum"    />
+    </resultMap>
+
+    <sql id="selectContractInfoVo">
+        select contract_info_id, contract_date, contract_limit, payment_method, salesperson, remark, parent_id, customer, phone, address, contractNum from contract_info
+    </sql>
+
+    <select id="selectContractInfoList" parameterType="ContractInfo" resultMap="ContractInfoResult">
+        <include refid="selectContractInfoVo"/>
+        <where>
+        	<if test="params.beginContractDate != null and params.beginContractDate != ''"><!-- 开始时间检索 -->
+				AND contract_date &gt;= to_date(#{params.beginContractDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+			<if test="params.endContractDate != null and params.endContractDate != ''"><!-- 结束时间检索 -->
+				AND contract_date &lt;= to_date(#{params.endContractDate},'yyyy-MM-dd HH24:mi:ss')
+			</if>
+            <if test="contractLimit != null and contractLimit !=''"> and contract_limit = #{contractLimit}</if>
+            <if test="paymentMethod != null and paymentMethod !=''"> and payment_method = #{paymentMethod}</if>
+            <if test="salesperson != null and salesperson !=''"> and salesperson = #{salesperson}</if>
+            <if test="parentId != null and parentId !=''"> and parent_id = #{parentId}</if>
+            <if test="customer != null and customer !=''"> and customer like  concat(concat('%', #{customer}), '%')</if>
+            <if test="phone != null and phone !=''"> and phone = #{phone}</if>
+            <if test="address != null and address !=''"> and address = #{address}</if>
+            <if test="contractNum != null and contractNum !=''"> and contractNum = #{contractNum}</if>  
+        </where>
+    </select>
+    
+    <select id="selectContractInfoCustomerList" parameterType="ContractInfo" resultMap="ContractInfoResult">
+        <include refid="selectContractInfoVo"/>
+        <where>  
+            <if test="customer != null  and customer != ''"> and customer = #{customer}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractInfoById" parameterType="Long" resultMap="ContractInfoResult">
+    	<include refid="selectContractInfoVo"/>
+    	where contract_info_id = #{contractInfoId}
+    </select>
+        
+    <insert id="insertContractInfo" parameterType="ContractInfo">
+        <selectKey keyProperty="contractInfoId" resultType="long" order="BEFORE">
+            SELECT seq_contract_info.NEXTVAL as contractInfoId FROM DUAL
+        </selectKey>
+        insert into contract_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractInfoId != null ">contract_info_id,</if>
+            <if test="contractDate != null ">contract_date,</if>
+            <if test="contractLimit != null ">contract_limit,</if>
+            <if test="paymentMethod != null ">payment_method,</if>
+            <if test="salesperson != null ">salesperson,</if>
+            <if test="remark != null ">remark,</if>
+            <if test="parentId != null ">parent_id,</if>
+            <if test="customer != null ">customer,</if>
+            <if test="phone != null ">phone,</if>
+            <if test="address != null ">address,</if>
+            <if test="contractNum != null ">contractNum,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractInfoId != null ">#{contractInfoId},</if>
+            <if test="contractDate != null ">#{contractDate},</if>
+            <if test="contractLimit != null ">#{contractLimit},</if>
+            <if test="paymentMethod != null ">#{paymentMethod},</if>
+            <if test="salesperson != null ">#{salesperson},</if>
+            <if test="remark != null ">#{remark},</if>
+            <if test="parentId != null ">#{parentId},</if>
+            <if test="customer != null ">#{customer},</if>
+            <if test="phone != null ">#{phone},</if>
+            <if test="address != null ">#{address},</if>
+            <if test="contractNum != null ">#{contractNum},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractInfo" parameterType="ContractInfo">
+        update contract_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="contractDate != null ">contract_date = #{contractDate},</if>
+            <if test="contractLimit != null ">contract_limit = #{contractLimit},</if>
+            <if test="paymentMethod != null ">payment_method = #{paymentMethod},</if>
+            <if test="salesperson != null ">salesperson = #{salesperson},</if>
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+            <if test="customer != null ">customer = #{customer},</if>
+            <if test="phone != null ">phone = #{phone},</if>
+            <if test="address != null ">address = #{address},</if>
+            <if test="contractNum != null ">contractNum = #{contractNum},</if>
+        </trim>
+        where contract_info_id = #{contractInfoId}
+    </update>
+
+    <delete id="deleteContractInfoById" parameterType="Long">
+        delete from contract_info where contract_info_id = #{contractInfoId}
+    </delete>
+
+    <delete id="deleteContractInfoByIds" parameterType="String">
+        delete from contract_info where contract_info_id in 
+        <foreach item="contractInfoId" collection="array" open="(" separator="," close=")">
+            #{contractInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

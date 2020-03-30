@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.ContractMaterialInfoMapper">
+    
+    <resultMap type="ContractMaterialInfo" id="ContractMaterialInfoResult">
+        <result property="contractMaterialInfoId"    column="contract_material_info_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="contractNum"    column="contract_num"    />
+        <result property="deliverGoods"    column="deliver_goods"    />
+        <result property="parentId"    column="parent_id"    />
+    </resultMap>
+
+    <sql id="selectContractMaterialInfoVo">
+        select contract_material_info_id, material_name, material_brand, material_model, material_norms, contract_num, deliver_goods, parent_id from contract_material_info
+    </sql>
+
+    <select id="selectContractMaterialInfoList" parameterType="ContractMaterialInfo" resultMap="ContractMaterialInfoResult">
+        <include refid="selectContractMaterialInfoVo"/>
+        <where>  
+            <!-- <if test="materialName != null and materialName !=''"> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialBrand != null and materialBrand !=''"> and material_brand = #{materialBrand}</if>
+            <if test="materialModel != null and materialModel !=''"> and material_model = #{materialModel}</if>
+            <if test="materialNorms != null and materialNorms !=''"> and material_norms = #{materialNorms}</if>
+            <if test="contractNum != null and contractNum !=''"> and contract_num = #{contractNum}</if>
+            <if test="deliverGoods != null and deliverGoods !=''"> and deliver_goods = #{deliverGoods}</if> -->
+            <if test="parentId != null and parentId !=''"> and parent_id = #{parentId}</if>
+        </where>
+    </select>
+    
+    <select id="selectContractMaterialInfoById" parameterType="Long" resultMap="ContractMaterialInfoResult">
+        <include refid="selectContractMaterialInfoVo"/>
+        where contract_material_info_id = #{contractMaterialInfoId}
+    </select>
+        
+    <insert id="insertContractMaterialInfo" parameterType="ContractMaterialInfo">
+        <selectKey keyProperty="contractMaterialInfoId" resultType="long" order="BEFORE">
+            SELECT seq_contract_material_info.NEXTVAL as contractMaterialInfoId FROM DUAL
+        </selectKey>
+        insert into contract_material_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractMaterialInfoId != null ">contract_material_info_id,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="contractNum != null ">contract_num,</if>
+            <if test="deliverGoods != null ">deliver_goods,</if>
+            <if test="parentId != null ">parent_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractMaterialInfoId != null ">#{contractMaterialInfoId},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="contractNum != null ">#{contractNum},</if>
+            <if test="deliverGoods != null ">#{deliverGoods},</if>
+            <if test="parentId != null ">#{parentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContractMaterialInfo" parameterType="ContractMaterialInfo">
+        update contract_material_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="contractNum != null ">contract_num = #{contractNum},</if>
+            <if test="deliverGoods != null ">deliver_goods = #{deliverGoods},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+        </trim>
+        where contract_material_info_id = #{contractMaterialInfoId}
+    </update>
+
+    <delete id="deleteContractMaterialInfoById" parameterType="Long">
+        delete from contract_material_info where contract_material_info_id = #{contractMaterialInfoId}
+    </delete>
+
+    <delete id="deleteContractMaterialInfoByIds" parameterType="String">
+        delete from contract_material_info where contract_material_info_id in 
+        <foreach item="contractMaterialInfoId" collection="array" open="(" separator="," close=")">
+            #{contractMaterialInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

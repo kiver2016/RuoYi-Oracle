@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.PaymentInfoMapper">
+    
+    <resultMap type="PaymentInfo" id="PaymentInfoResult">
+        <result property="paymentInfoId"    column="payment_info_id"    />
+        <result property="paymentDate"    column="payment_date"    />
+        <result property="paymentLimit"    column="payment_limit"    />
+        <result property="parentId"    column="parent_id"    />
+    </resultMap>
+
+    <sql id="selectPaymentInfoVo">
+        select payment_info_id, payment_date, payment_limit, parent_id from payment_info
+    </sql>
+
+    <select id="selectPaymentInfoList" parameterType="PaymentInfo" resultMap="PaymentInfoResult">
+        <include refid="selectPaymentInfoVo"/>
+        <where>  
+            <if test="parentId != null and parentId !=''"> and parent_id = #{parentId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPaymentInfoById" parameterType="Long" resultMap="PaymentInfoResult">
+    	<include refid="selectPaymentInfoVo"/>
+    	 where payment_info_id = #{paymentInfoId}
+    </select>
+        
+    <insert id="insertPaymentInfo" parameterType="PaymentInfo">
+        <selectKey keyProperty="paymentInfoId" resultType="long" order="BEFORE">
+            SELECT seq_payment_info.NEXTVAL as paymentInfoId FROM DUAL
+        </selectKey>
+        insert into payment_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paymentInfoId != null ">payment_info_id,</if>
+            <if test="paymentDate != null ">payment_date,</if>
+            <if test="paymentLimit != null ">payment_limit,</if>
+            <if test="parentId != null ">parent_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="paymentInfoId != null ">#{paymentInfoId},</if>
+            <if test="paymentDate != null ">#{paymentDate},</if>
+            <if test="paymentLimit != null ">#{paymentLimit},</if>
+            <if test="parentId != null ">#{parentId},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePaymentInfo" parameterType="PaymentInfo">
+        update payment_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="paymentDate != null ">payment_date = #{paymentDate},</if>
+            <if test="paymentLimit != null ">payment_limit = #{paymentLimit},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+        </trim>
+        where payment_info_id = #{paymentInfoId}
+    </update>
+
+    <delete id="deletePaymentInfoById" parameterType="Long">
+        delete from payment_info where payment_info_id = #{paymentInfoId}
+    </delete>
+
+    <delete id="deletePaymentInfoByIds" parameterType="String">
+        delete from payment_info where payment_info_id in 
+        <foreach item="paymentInfoId" collection="array" open="(" separator="," close=")">
+            #{paymentInfoId}
+        </foreach>
+    </delete>
+    
+</mapper>

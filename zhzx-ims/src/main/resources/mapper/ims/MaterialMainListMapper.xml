@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhzx.ims.mapper.MaterialMainListMapper">
+    
+    <resultMap type="MaterialMainList" id="MaterialMainListResult">
+        <result property="materialNum"    column="material_num"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="materialMainId"    column="material_main_id"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="materialBrand"    column="material_brand"    />
+        <result property="materialModel"    column="material_model"    />
+        <result property="materialNorms"    column="material_norms"    />
+        <result property="materialLargeClass"    column="material_large_class"    />
+        <result property="materialSubClass"    column="material_sub_class"    />
+        <result property="materialUnit"    column="material_unit"    />
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+
+    <sql id="selectMaterialMainListVo">
+        select material_num, parent_id, material_main_id, material_name, material_brand, material_model, material_norms, material_large_class, material_sub_class, material_unit from material_main_list
+    </sql>
+
+    <select id="selectMaterialMainListList" parameterType="MaterialMainList" resultMap="MaterialMainListResult">
+        <include refid="selectMaterialMainListVo"/>
+        <where>  
+            <!-- <if test="materialName != null and materialName !=''"> and material_name like concat(concat('%', #{materialName}), '%')</if>
+            <if test="materialBrand != null and materialBrand !=''"> and material_brand like concat(concat('%', #{materialBrand}), '%')</if>
+            <if test="materialModel != null and materialModel !=''"> and material_model like concat(concat('%', #{materialModel}), '%')</if>
+            <if test="materialNorms != null and materialNorms !=''"> and material_norms like concat(concat('%', #{materialNorms}), '%')</if>
+            <if test="materialLargeClass != null and materialLargeClass !=''"> and material_large_class like concat(concat('%', #{materialLargeClass}), '%')</if>
+            <if test="materialSubClass != null and materialSubClass !=''"> and material_sub_class like concat(concat('%', #{materialSubClass}), '%')</if>
+            <if test="materialUnit != null and materialUnit !=''"> and material_unit like concat(concat('%', #{materialUnit}), '%')</if> -->
+            <if test="parentId != null and parentId !=''"> and parent_id like concat(concat('%', #{parentId}), '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectMaterialMainListById" parameterType="Long" resultMap="MaterialMainListResult">
+	    <include refid="selectMaterialMainListVo"/>
+	    where material_main_id = #{materialMainId}
+    </select>
+        
+    <insert id="insertMaterialMainList" parameterType="MaterialMainList">
+        <selectKey keyProperty="materialMainId" resultType="long" order="BEFORE">
+            SELECT seq_material_main_list.NEXTVAL as materialMainId FROM DUAL
+        </selectKey>
+        insert into material_main_list
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialNum != null ">material_num,</if>
+            <if test="parentId != null ">parent_id,</if>
+            <if test="materialMainId != null ">material_main_id,</if>
+            <if test="materialName != null ">material_name,</if>
+            <if test="materialBrand != null ">material_brand,</if>
+            <if test="materialModel != null ">material_model,</if>
+            <if test="materialNorms != null ">material_norms,</if>
+            <if test="materialLargeClass != null ">material_large_class,</if>
+            <if test="materialSubClass != null ">material_sub_class,</if>
+            <if test="materialUnit != null ">material_unit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialNum != null ">#{materialNum},</if>
+            <if test="parentId != null ">#{parentId},</if>
+            <if test="materialMainId != null ">#{materialMainId},</if>
+            <if test="materialName != null ">#{materialName},</if>
+            <if test="materialBrand != null ">#{materialBrand},</if>
+            <if test="materialModel != null ">#{materialModel},</if>
+            <if test="materialNorms != null ">#{materialNorms},</if>
+            <if test="materialLargeClass != null ">#{materialLargeClass},</if>
+            <if test="materialSubClass != null ">#{materialSubClass},</if>
+            <if test="materialUnit != null ">#{materialUnit},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMaterialMainList" parameterType="MaterialMainList">
+        update material_main_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialNum != null ">material_num = #{materialNum},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+            <if test="materialName != null ">material_name = #{materialName},</if>
+            <if test="materialBrand != null ">material_brand = #{materialBrand},</if>
+            <if test="materialModel != null ">material_model = #{materialModel},</if>
+            <if test="materialNorms != null ">material_norms = #{materialNorms},</if>
+            <if test="materialLargeClass != null ">material_large_class = #{materialLargeClass},</if>
+            <if test="materialSubClass != null ">material_sub_class = #{materialSubClass},</if>
+            <if test="materialUnit != null ">material_unit = #{materialUnit},</if>
+        </trim>
+        where material_main_id = #{materialMainId}
+    </update>
+
+    <delete id="deleteMaterialMainListById" parameterType="Long">
+        delete from material_main_list where material_main_id = #{materialMainId}
+    </delete>
+
+    <delete id="deleteMaterialMainListByIds" parameterType="String">
+        delete from material_main_list where material_main_id in 
+        <foreach item="materialMainId" collection="array" open="(" separator="," close=")">
+            #{materialMainId}
+        </foreach>
+    </delete>
+    
+</mapper>
